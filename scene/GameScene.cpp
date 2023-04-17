@@ -4,7 +4,10 @@
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() { delete sprite_; }
+GameScene::~GameScene() { 
+	delete sprite_;
+	delete model_;
+}
 
 void GameScene::Initialize() {
 
@@ -15,6 +18,18 @@ void GameScene::Initialize() {
 	textureHandle_ = TextureManager::Load("sample.png");
 	// スプライトの生成
 	sprite_ = Sprite::Create(textureHandle_, {100, 50});
+	// 3Dモデルの生成
+	model_ = Model::Create();
+	// ワールドトランスフォームの初期化
+	worldTransform_.Initialize();
+	// ビュープロジェクションの初期化
+	viewProjection_.Initialize();
+	// サウンドデータの読み込み
+	soundDataHandle_ = audio_->LoadWave("mokugyo.wav");
+	// 音声再生
+	audio_->PlayWave(soundDataHandle_);
+
+	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
 }
 
 void GameScene::Update() {
@@ -25,6 +40,11 @@ void GameScene::Update() {
 	position.y += 1.0f;
 	// 移動した座標をスプライトに反映
 	sprite_->SetPosition(position);
+	// スペースキーを押した瞬間
+	if (input_->TriggerKey(DIK_SPACE)) {
+		// 音声停止
+		audio_->StopWave(voiceHandle_);
+	}
 }
 
 void GameScene::Draw() {
@@ -39,7 +59,8 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
-	sprite_->Draw();
+	// 2D描画
+	//sprite_->Draw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -54,6 +75,8 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
+	// 3Dモデル描画
+	model_->Draw(worldTransform_, viewProjection_, textureHandle_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
