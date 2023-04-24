@@ -4,6 +4,7 @@
 #include <Input.h>
 #include"Matrix.h"
 #include "PlayerBullet.h"
+#include <list>
 
 class Player
 {
@@ -28,6 +29,9 @@ public:
 	// Attack
 	void Attack();
 
+	// Destract
+	~Player();
+
 	private:
 	// WorldData
 	WorldTransform worldTransform_;
@@ -40,6 +44,7 @@ public:
 	Input* input_ = nullptr;
 
 	// bullet
-	PlayerBullet* bullet_ = nullptr;
+	std::list<PlayerBullet*> bullets_;
+	//PlayerBullet* bullet_ = nullptr;
 
 };

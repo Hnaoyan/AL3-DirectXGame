@@ -2,6 +2,13 @@
 #include<cassert>
 #include "ImGuiManager.h"
 
+Player::~Player() { 
+	for (PlayerBullet* bullet : bullets_) {
+		delete bullet;
+	}
+	
+}
+
 void Player::Initialize(Model* model, uint32_t textureHandle) {
 	// NULL Check
 	assert(model);
@@ -77,8 +84,8 @@ void Player::Update() {
 	Attack();
 
 	// UpdateBullet
-	if (this->bullet_) {
-		this->bullet_->Update();
+	for (PlayerBullet* bullet : bullets_) {
+		bullet->Update();
 	}
 	
 	//DebugText
@@ -101,8 +108,8 @@ void Player::Draw(ViewProjection& viewProjection) {
 	// PositionDraw
 
 	// BulletDraw
-	if (this->bullet_) {
-		this->bullet_->Draw(viewProjection);
+	for (PlayerBullet* bullet : bullets_) {
+		bullet->Draw(viewProjection);
 	}
 }
 
@@ -115,12 +122,17 @@ void Player::MoveVector(Vector3& position, Vector3& vector) {
 void Player::Attack() { 
 	if (input_->TriggerKey(DIK_V)){
 		
+		//// Delete
+		//if (bullet_) {
+		//	delete bullet_;
+		//	bullet_ = nullptr;
+		//}
+
 		// BulletGeneration
 		PlayerBullet* newBullet = new PlayerBullet();
 		newBullet->Initialize(model_, this->worldTransform_.translation_);
 
-
 		// 
-		this->bullet_ = newBullet;
+		bullets_.push_back(newBullet);
 	}
 }
