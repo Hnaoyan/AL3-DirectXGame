@@ -22,18 +22,6 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	this->input_ = Input::GetInstance();
 }
 
-void Player::Rotate() {
-	// RotateSpeed
-	const float kRotSpeed = 0.02f;
-
-	// Update
-	if (input_->PushKey(DIK_A)) {
-		worldTransform_.rotation_.y -= kRotSpeed;
-	} else if (input_->PushKey(DIK_D)) {
-		worldTransform_.rotation_.y += kRotSpeed;
-	}
-}
-
 void Player::Update() {
 	// BulletDelete
 	bullets_.remove_if([](PlayerBullet* bullet) {

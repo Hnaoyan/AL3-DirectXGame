@@ -113,7 +113,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="PlayerBullet.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
     <ClCompile Include="MathCalc.cpp" />
     <ClCompile Include="WorldTransformEx.cpp" />
@@ -149,7 +148,6 @@
     <ClInclude Include="math\Vector4.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="PlayerBullet.h" />
     <ClInclude Include="scene\GameScene.h" />
     <ClInclude Include="MathCalc.h" />
   </ItemGroup>
