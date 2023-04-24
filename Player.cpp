@@ -1,7 +1,7 @@
 #include "Player.h"
 #include<cassert>
 #include "ImGuiManager.h"
-#include"Vector.h"
+#include "MathCalc.h"
 
 Player::~Player() { 
 	for (PlayerBullet* bullet : bullets_) {

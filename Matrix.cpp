@@ -1,6 +1,4 @@
 #include "Matrix.h"
-
-#include "Matrix.h"
 #include <cmath>
 
 Matrix4x4 MakeAffineMatrix(

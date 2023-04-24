@@ -1,11 +1,12 @@
 #include "Enemy.h"
-#include "Vector.h"
+#include "MathCalc.h"
 #include <assert.h>
 #include "TextureManager.h"
 
 void Enemy::Initialize(Model* model) { 
 	assert(model);
 
+	
 	this->model_ = model;
 	this->textureHandle_ = TextureManager::Load("white1x1.png"); 
 	worldTransform_.Initialize();
@@ -14,7 +15,27 @@ void Enemy::Initialize(Model* model) {
 }
 
 void Enemy::Update() {
-	
+	switch (phase_) {
+	case Phase::Approach:
+	default:
+		// Move
+		velocity_ = {0, 0, -0.1f};
+
+		worldTransform_.translation_ += velocity_;
+
+		if (worldTransform_.translation_.z < 0.0f) {
+			phase_ = Phase::Leave;
+		}
+
+		break;
+	case Phase::Leave:
+		// Move
+		velocity_ = {-0.1f, 0.1f, -0.05f};
+
+		worldTransform_.translation_ += velocity_;
+
+		break;
+	}
 	MoveVector(worldTransform_.translation_, velocity_);
 	worldTransform_.UpdateMatrix();
 

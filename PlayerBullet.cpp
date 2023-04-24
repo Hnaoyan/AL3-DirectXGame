@@ -1,6 +1,6 @@
 #include "PlayerBullet.h"
 #include <assert.h>
-#include"Vector.h"
+#include"MathCalc.h"
 
 void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vector3& velocity) {
 	// NULLPointerCheck

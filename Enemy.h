@@ -3,6 +3,12 @@
 #include"Model.h"
 #include"TextureManager.h"
 
+enum class Phase {
+	Normal,		// Normal
+	Approach,	// Near
+	Leave,		// Leave
+};
+
 class Enemy {
 public:
 	// Initialize
@@ -19,6 +25,8 @@ private:
 	Model* model_ = nullptr;
 	// Texture
 	uint32_t textureHandle_ = 0u;
-	// velocity
+	// Velocity
 	Vector3 velocity_;
+	// Phase
+	Phase phase_ = Phase::Normal;
 };
