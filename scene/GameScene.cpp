@@ -11,6 +11,8 @@ GameScene::~GameScene() {
 
 	// 自キャラの解放
 	delete player_;
+	// 敵キャラの解放
+	delete enemy_;
 	// デバッグカメラの解放
 	delete debugCamera_;
 }
@@ -29,6 +31,9 @@ void GameScene::Initialize() {
 	// 自キャラ
 	player_ = new Player();
 	player_->Initialize(model_, textureHandle_);
+	// 敵キャラ
+	enemy_ = new Enemy();
+	enemy_->Initialize(model_);
 	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
 
@@ -41,6 +46,9 @@ void GameScene::Initialize() {
 void GameScene::Update() { 
 	player_->Update();
 	debugCamera_->Update();
+	if (enemy_ != NULL) {
+		enemy_->Update();
+	}
 
 #ifdef _DEBUG
 	if (input_->TriggerKey(DIK_L)) {
@@ -89,7 +97,9 @@ void GameScene::Draw() {
 	/// </summary>
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
-
+	if (enemy_ != NULL) {
+		enemy_->Draw(viewProjection_);
+	}
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
