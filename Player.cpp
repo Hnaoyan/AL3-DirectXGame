@@ -1,6 +1,7 @@
 #include "Player.h"
 #include<cassert>
 #include "ImGuiManager.h"
+#include"Vector.h"
 
 Player::~Player() { 
 	for (PlayerBullet* bullet : bullets_) {
@@ -34,6 +35,15 @@ void Player::Rotate() {
 }
 
 void Player::Update() {
+	// BulletDelete
+	bullets_.remove_if([](PlayerBullet* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+	});
+
 	// MoveMaxMin
 	// limitPos
 	const float kMoveLimitsX = 15;
@@ -113,24 +123,19 @@ void Player::Draw(ViewProjection& viewProjection) {
 	}
 }
 
-void Player::MoveVector(Vector3& position, Vector3& vector) { 
-	position.x += vector.x;
-	position.y += vector.y;
-	position.z += vector.z;
-}
-
 void Player::Attack() { 
-	if (input_->TriggerKey(DIK_V)){
-		
-		//// Delete
-		//if (bullet_) {
-		//	delete bullet_;
-		//	bullet_ = nullptr;
-		//}
+	if (input_->TriggerKey(DIK_SPACE)){
+
+		// BulletSpeed
+		const float kBulletSpeed = 1.0f;
+		Vector3 velocity(0, 0, kBulletSpeed);
+
+		// BulletRotate
+		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 
 		// BulletGeneration
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, this->worldTransform_.translation_);
+		newBullet->Initialize(model_, this->worldTransform_.translation_, velocity);
 
 		// 
 		bullets_.push_back(newBullet);

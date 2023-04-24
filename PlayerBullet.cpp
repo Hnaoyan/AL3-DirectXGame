@@ -1,7 +1,8 @@
 #include "PlayerBullet.h"
 #include <assert.h>
+#include"Vector.h"
 
-void PlayerBullet::Initialize(Model* model, const Vector3& position) {
+void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vector3& velocity) {
 	// NULLPointerCheck
 	assert(model);
 
@@ -12,9 +13,17 @@ void PlayerBullet::Initialize(Model* model, const Vector3& position) {
 	worldTransform_.Initialize();
 	// InitialPositionReset
 	this->worldTransform_.translation_ = position;
+	// 
+	this->velocity_ = velocity;
 }
 
 void PlayerBullet::Update() { 
+	// Timer
+	if (--deathTimer_ <= 0) {
+		isDead_ = true;
+	}
+	// positionMove
+	MoveVector(worldTransform_.translation_, velocity_);
 	this->worldTransform_.UpdateMatrix();
 }
 

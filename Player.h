@@ -21,8 +21,6 @@ public:
 	/// <param name="viewProject">ViewProjection</param>
 	void Draw(ViewProjection& viewProjection);
 
-	void MoveVector(Vector3& position, Vector3& vector);
-
 	// Rotate
 	void Rotate();
 
