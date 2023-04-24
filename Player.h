@@ -1,6 +1,9 @@
 #pragma once
 #include "Model.h"
 #include "WorldTransform.h"
+#include <Input.h>
+#include"Matrix.h"
+#include "PlayerBullet.h"
 
 class Player
 {
@@ -17,11 +20,26 @@ public:
 	/// <param name="viewProject">ViewProjection</param>
 	void Draw(ViewProjection& viewProjection);
 
-private:
+	void MoveVector(Vector3& position, Vector3& vector);
+
+	// Rotate
+	void Rotate();
+
+	// Attack
+	void Attack();
+
+	private:
 	// WorldData
 	WorldTransform worldTransform_;
 	// Model
 	Model* model_ = nullptr;
 	// Handle
 	uint32_t textureHandle_ = 0u;
+
+	// Keyboard
+	Input* input_ = nullptr;
+
+	// bullet
+	PlayerBullet* bullet_ = nullptr;
+
 };
