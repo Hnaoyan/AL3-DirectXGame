@@ -4,7 +4,6 @@
 #include"TextureManager.h"
 
 enum class Phase {
-	Normal,		// Normal
 	Approach,	// Near
 	Leave,		// Leave
 };
@@ -18,7 +17,13 @@ public:
 	// Draw
 	void Draw(const ViewProjection& viewProjection);
 
+	// Pattern
+	void Approach();
+	void Leave();
+
 private:
+	static void (Enemy::*spFuncTable[])();
+
 	// world
 	WorldTransform worldTransform_;
 	// Model
@@ -27,6 +32,6 @@ private:
 	uint32_t textureHandle_ = 0u;
 	// Velocity
 	Vector3 velocity_;
-	// Phase
-	Phase phase_ = Phase::Normal;
+	// Phase	
+	Phase phase_ = Phase::Approach;
 };

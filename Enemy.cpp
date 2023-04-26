@@ -14,28 +14,32 @@ void Enemy::Initialize(Model* model) {
 	worldTransform_.translation_ = {0, 1.0f, 50.0f};
 }
 
-void Enemy::Update() {
-	switch (phase_) {
-	case Phase::Approach:
-	default:
-		// Move
-		velocity_ = {0, 0, -0.1f};
+void (Enemy::*Enemy::spFuncTable[])() = {
+	&Enemy::Approach,
+	&Enemy::Leave
+};
 
-		worldTransform_.translation_ += velocity_;
+void Enemy::Approach() {
+	// Move
+	velocity_ = {0, 0, -0.5f};
 
-		if (worldTransform_.translation_.z < 0.0f) {
-			phase_ = Phase::Leave;
-		}
+	worldTransform_.translation_ += velocity_;
 
-		break;
-	case Phase::Leave:
-		// Move
-		velocity_ = {-0.1f, 0.1f, -0.05f};
-
-		worldTransform_.translation_ += velocity_;
-
-		break;
+	if (worldTransform_.translation_.z < 0.0f) {
+		phase_ = Phase::Leave;
 	}
+}
+
+void Enemy::Leave() {
+	// Move
+	velocity_ = {-0.1f, 0.1f, -0.05f};
+
+	worldTransform_.translation_ += velocity_;
+}
+
+void Enemy::Update() {
+	(this->*spFuncTable[static_cast<size_t>(phase_)])();
+
 	MoveVector(worldTransform_.translation_, velocity_);
 	worldTransform_.UpdateMatrix();
 
