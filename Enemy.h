@@ -1,6 +1,7 @@
 #pragma once
 #include"WorldTransform.h"
 #include"Model.h"
+#include"BaseEnemyState.h"
 #include"TextureManager.h"
 
 enum class Phase {
@@ -21,8 +22,15 @@ public:
 	void Approach();
 	void Leave();
 
+	// State
+	//void ChangeState(BaseEnemyState* state);
+
+	//void MoveUpdate(Vector3& velocity);
+
 private:
 	static void (Enemy::*spFuncTable[])();
+	//BaseEnemyState* state_;
+
 
 	// world
 	WorldTransform worldTransform_;

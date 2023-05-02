@@ -23,8 +23,6 @@ void Enemy::Approach() {
 	// Move
 	velocity_ = {0, 0, -0.5f};
 
-	worldTransform_.translation_ += velocity_;
-
 	if (worldTransform_.translation_.z < 0.0f) {
 		phase_ = Phase::Leave;
 	}
@@ -34,13 +32,13 @@ void Enemy::Leave() {
 	// Move
 	velocity_ = {-0.1f, 0.1f, -0.05f};
 
-	worldTransform_.translation_ += velocity_;
 }
 
 void Enemy::Update() {
 	(this->*spFuncTable[static_cast<size_t>(phase_)])();
 
-	MoveVector(worldTransform_.translation_, velocity_);
+	worldTransform_.translation_ = worldTransform_.translation_ + velocity_;
+	//worldTransform_.translation_ += velocity_;
 	worldTransform_.UpdateMatrix();
 
 }

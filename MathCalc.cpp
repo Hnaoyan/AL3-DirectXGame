@@ -17,26 +17,6 @@ Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m)
 
 }
 
-const Vector3 operator+=(const Vector3& v1, const Vector3& v2) { 
-	Vector3 result;
-	result.x = v1.x + v2.x;
-	result.y = v1.y + v2.y;
-	result.z = v1.z + v2.z;
-	return result;
-}
-
-const Vector3 operator+=(const Vector3& v1, const float speed) {
-	Vector3 result;
-	result.x = v1.x + speed;
-	result.y = v1.y + speed;
-	result.z = v1.z + speed;
-	return result;
-}
-
-const Vector3 operator-=(const Vector3& v1, const Vector3& v2) { 
-	Vector3 result;
-	result.x = v1.x - v2.x;
-	result.y = v1.y - v2.y;
-	result.z = v1.z - v2.z;
-	return result;
-}
+//const Vector3 operator+(const Vector3& v1,const Vector3& v2){
+//	return (*this) += v1
+//};
