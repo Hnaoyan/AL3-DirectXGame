@@ -23,7 +23,7 @@ private:
 	// Velocity
 	Vector3 velocity_;
 	// Death
-	static const int32_t kLifeTime = 60 * 2;
+	static const int32_t kLifeTime = 60 * 5;
 	// time
 	int32_t deathTimer = kLifeTime;
 	// flag

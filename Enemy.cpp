@@ -17,7 +17,8 @@ void Enemy::Initialize(Model* model) {
 	this->textureHandle_ = TextureManager::Load("white1x1.png"); 
 	worldTransform_.Initialize();
 	velocity_ = {0, 0, -0.5f};
-	worldTransform_.translation_ = {0, 1.0f, 50.0f};
+	worldTransform_.translation_ = {10.0f, 1.0f, 100.0f};
+	ApproachInitialize();
 }
 
 void Enemy::Update() {
@@ -32,10 +33,8 @@ void Enemy::Update() {
 
 	(this->*spFuncTable[static_cast<size_t>(phase_)])();
 
-	//MoveVector(worldTransform_.translation_, velocity_);
+	worldTransform_.translation_ = worldTransform_.translation_ + velocity_;
 	worldTransform_.UpdateMatrix();
-
-	ApproachInitialize();
 
 	for (EnemyBullet* bullet : bullets_) {
 		bullet->Update();
@@ -52,16 +51,14 @@ void Enemy::Draw(const ViewProjection& viewProjection) {
 }
 
 void Enemy::Fire() { 
-	if (input_->TriggerKey(DIK_SPACE)) {
-		// Velocity
-		const float kBulletSpeed = -0.5f;
-		Vector3 velocity = {0, 0, kBulletSpeed};
-		// Initialize
-		EnemyBullet* newBullet = new EnemyBullet();
-		newBullet->Initialize(model_, this->worldTransform_.translation_,velocity);
+	// Velocity
+	const float kBulletSpeed = -0.5f;
+	Vector3 velocity = {0, 0, kBulletSpeed};
+	// Initialize
+	EnemyBullet* newBullet = new EnemyBullet();
+	newBullet->Initialize(model_, this->worldTransform_.translation_,velocity);
 
-		bullets_.push_back(newBullet);
-	}
+	bullets_.push_back(newBullet);
 }
 
 void (Enemy::*Enemy::spFuncTable[])() = 
@@ -71,10 +68,16 @@ void (Enemy::*Enemy::spFuncTable[])() =
 };
 
 void Enemy::Approach() {
+	shootTimer--;
+	if (shootTimer == 0) {
+		// Fire
+		Fire();
+		// Init
+		shootTimer = kFireInterval;
+	}
+
 	// Move
 	velocity_ = {0, 0, -0.1f};
-
-	worldTransform_.translation_ += velocity_;
 
 	if (worldTransform_.translation_.z < 0.0f) {
 		phase_ = Phase::Leave;
@@ -85,7 +88,6 @@ void Enemy::Leave() {
 	// Move
 	velocity_ = {-0.1f, 0.1f, -0.05f};
 
-	worldTransform_.translation_ += velocity_;
 }
 
 void Enemy::ApproachInitialize() {
