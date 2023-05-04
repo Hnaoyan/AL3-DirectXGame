@@ -30,7 +30,7 @@ public:
 	// Destract
 	~Player();
 
-	private:
+private:
 	// WorldData
 	WorldTransform worldTransform_;
 	// Model

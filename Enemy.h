@@ -2,6 +2,9 @@
 #include"WorldTransform.h"
 #include"Model.h"
 #include"TextureManager.h"
+#include <Input.h>
+#include <list>
+#include"EnemyBullet.h"
 
 enum class Phase {
 	Approach,	// Near
@@ -21,6 +24,15 @@ public:
 	void Approach();
 	void Leave();
 
+	// Bullet
+	void Fire();
+
+	void ApproachInitialize();
+
+	~Enemy();
+
+	static const int kFireInterval = 60;
+
 private:
 	static void (Enemy::*spFuncTable[])();
 
@@ -34,4 +46,10 @@ private:
 	Vector3 velocity_;
 	// Phase	
 	Phase phase_ = Phase::Approach;
+	// Bullet
+	std::list<EnemyBullet*> bullets_;
+	// Keyboard
+	Input* input_ = nullptr;
+
+	int32_t shootTimer = 0;
 };
