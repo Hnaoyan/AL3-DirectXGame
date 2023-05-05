@@ -1,4 +1,5 @@
 #include "MathCalc.h"
+#include <cmath>
 
 void MoveVector(Vector3& position, Vector3& vector) {
 	position.x += vector.x;
@@ -15,6 +16,21 @@ Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m)
 	};
 	return result;
 
+}
+
+Vector3 Calc::Normalize(const Vector3& v) { 
+	Vector3 result = {};
+	float length = sqrt((v.x * v.x) + (v.y * v.y) + (v.z * v.z));
+
+	if (length != 0) {
+		result.x = v.x / length;
+		result.y = v.y / length;
+		result.z = v.z / length;
+	} else {
+		result = {};
+	}
+
+	return result;
 }
 
 const Vector3 operator+=(const Vector3& v1, const Vector3& v2) { 

@@ -2,6 +2,7 @@
 #include "MathCalc.h"
 #include <assert.h>
 #include "TextureManager.h"
+#include "Player.h"
 
 Enemy::~Enemy() { 
 	for (EnemyBullet* bullet : bullets_) {
@@ -15,10 +16,13 @@ void Enemy::Initialize(Model* model) {
 	input_ = Input::GetInstance();
 	this->model_ = model;
 	this->textureHandle_ = TextureManager::Load("white1x1.png"); 
+
 	worldTransform_.Initialize();
 	velocity_ = {0, 0, -0.5f};
 	worldTransform_.translation_ = {10.0f, 1.0f, 100.0f};
+
 	ApproachInitialize();
+
 }
 
 void Enemy::Update() {
@@ -50,10 +54,27 @@ void Enemy::Draw(const ViewProjection& viewProjection) {
 	}
 }
 
+Vector3 Enemy::GetWolrdPosition() {
+	Vector3 worldPos;
+
+	worldPos = TransformNormal(worldTransform_.translation_, worldTransform_.matWorld_);
+
+	return worldPos;
+}
+
 void Enemy::Fire() { 
+	assert(player_);
+
 	// Velocity
-	const float kBulletSpeed = -0.5f;
-	Vector3 velocity = {0, 0, kBulletSpeed};
+	const float kBulletSpeed = 0.5f;
+	Vector3 playerPosition = player_->GetWorldPosition();
+	Vector3 enemyPosition = this->GetWolrdPosition();
+
+	Vector3 vectorDiff = playerPosition - enemyPosition;
+	vectorDiff = Calc::Normalize(vectorDiff);
+
+	Vector3 velocity = {
+	    vectorDiff.x * kBulletSpeed, vectorDiff.y * kBulletSpeed, vectorDiff.z * kBulletSpeed};
 	// Initialize
 	EnemyBullet* newBullet = new EnemyBullet();
 	newBullet->Initialize(model_, this->worldTransform_.translation_,velocity);

@@ -30,6 +30,9 @@ public:
 	// Destract
 	~Player();
 
+	// WorldPosition
+	Vector3 GetWorldPosition();
+
 private:
 	// WorldData
 	WorldTransform worldTransform_;

@@ -5,6 +5,9 @@
 #include <Input.h>
 #include <list>
 #include"EnemyBullet.h"
+//#include"Player.h"
+
+class Player;
 
 enum class Phase {
 	Approach,	// Near
@@ -33,8 +36,16 @@ public:
 
 	static const int kFireInterval = 60;
 
+	void SetPlayer(Player* player) { player_ = player; }
+
+	// WolrdPosGet
+	Vector3 GetWolrdPosition();
+
 private:
 	static void (Enemy::*spFuncTable[])();
+
+	// Player
+	Player* player_ = nullptr;
 
 	// world
 	WorldTransform worldTransform_;

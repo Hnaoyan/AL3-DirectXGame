@@ -34,6 +34,9 @@ void GameScene::Initialize() {
 	// 敵キャラ
 	enemy_ = new Enemy();
 	enemy_->Initialize(model_);
+	// 敵キャラに自キャラのアドレスを渡す
+	enemy_->SetPlayer(player_);
+
 	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
 

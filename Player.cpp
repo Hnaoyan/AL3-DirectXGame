@@ -17,7 +17,7 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	this->model_ = model;
 	this->textureHandle_ = textureHandle;
 	worldTransform_.Initialize();
-
+	worldTransform_.translation_ = {0, 0, -10.0f};
 	// SingleInstance
 	this->input_ = Input::GetInstance();
 }
@@ -89,7 +89,9 @@ void Player::Update() {
 	}
 
 	// PositionMove
-	MoveVector(worldTransform_.translation_, move);
+	//MoveVector(worldTransform_.translation_, move);
+	worldTransform_.translation_ = worldTransform_.translation_ + move;
+	//worldTransform_.translation_ += move;
 	Rotate();
 	Attack();
 
@@ -121,6 +123,14 @@ void Player::Draw(ViewProjection& viewProjection) {
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Draw(viewProjection);
 	}
+}
+
+Vector3 Player::GetWorldPosition() { 
+	Vector3 worldPos;
+
+	worldPos = TransformNormal(worldTransform_.translation_, worldTransform_.matWorld_);
+
+	return worldPos;
 }
 
 void Player::Attack() { 
