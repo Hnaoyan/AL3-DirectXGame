@@ -19,7 +19,7 @@ void Enemy::Initialize(Model* model) {
 
 	worldTransform_.Initialize();
 	velocity_ = {0, 0, -0.5f};
-	worldTransform_.translation_ = {10.0f, 1.0f, 100.0f};
+	worldTransform_.translation_ = {30.0f, 3.0f, 100.0f};
 
 	ApproachInitialize();
 
