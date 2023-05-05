@@ -19,6 +19,12 @@ public:
 	void Draw(const ViewProjection& viewProjection);
 
 	bool IsDead() const { return isDead_; }
+	// Collision
+	void OnCollision();
+
+	Vector3 GetWorldPosition();
+
+	const float radius = 10.0f;
 
 private:
 	// WorldData

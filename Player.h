@@ -30,8 +30,15 @@ public:
 	// Destract
 	~Player();
 
+	// Collision
+	void OnCollision();
+
 	// WorldPosition
 	Vector3 GetWorldPosition();
+
+	const std::list<PlayerBullet*>& GetBullets() { return bullets_; }
+
+	const float radius = 15.0f;
 
 private:
 	// WorldData

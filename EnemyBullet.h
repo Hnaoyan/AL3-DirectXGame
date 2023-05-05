@@ -13,6 +13,13 @@ public:
 
 	bool IsDead() const { return isDead_; }
 
+	// Collision
+	void OnCollision();
+
+	Vector3 GetWorldPosition();
+
+	const float radius = 10.0f;
+
 private:
 
 	WorldTransform worldTransform_;

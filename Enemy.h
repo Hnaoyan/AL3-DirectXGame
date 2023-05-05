@@ -27,6 +27,9 @@ public:
 	void Approach();
 	void Leave();
 
+	// Collision
+	void OnCollision();
+
 	// Bullet
 	void Fire();
 
@@ -40,6 +43,10 @@ public:
 
 	// WolrdPosGet
 	Vector3 GetWolrdPosition();
+
+	const std::list<EnemyBullet*>& GetBullets() { return bullets_; }
+
+	const float radius = 15.0f;
 
 private:
 	static void (Enemy::*spFuncTable[])();

@@ -116,3 +116,7 @@ void Enemy::ApproachInitialize() {
 	this->shootTimer = this->kFireInterval;
 
 }
+
+void Enemy::OnCollision() {
+
+}

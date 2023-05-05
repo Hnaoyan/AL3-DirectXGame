@@ -151,3 +151,7 @@ void Player::Attack() {
 		bullets_.push_back(newBullet);
 	}
 }
+
+void Player::OnCollision() {
+
+}

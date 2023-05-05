@@ -8,7 +8,7 @@ void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vecto
 
 	this->model_ = model;
 	// TextureLoad
-	this->textureHandle_ = TextureManager::Load("white1x1.png");
+	this->textureHandle_ = TextureManager::Load("black.png");
 
 	worldTransform_.Initialize();
 	// InitialPositionReset
@@ -30,4 +30,17 @@ void PlayerBullet::Update() {
 void PlayerBullet::Draw(const ViewProjection& viewProjection) {
 	// ModelDraw
 	this->model_->Draw(worldTransform_, viewProjection, textureHandle_);
+}
+
+void PlayerBullet::OnCollision() {
+	isDead_ = true;
+
+}
+
+Vector3 PlayerBullet::GetWorldPosition() {
+	Vector3 worldPos;
+
+	worldPos = TransformNormal(worldTransform_.translation_, worldTransform_.matWorld_);
+
+	return worldPos;
 }
