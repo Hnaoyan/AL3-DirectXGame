@@ -72,6 +72,9 @@ void Enemy::Approach() {
 	if (shootTimer == 0) {
 		// Fire
 		Fire();
+		// TimerSet
+		timedCalls_.push_back(new TimedCall(std::bind(&Enemy::FireTimeReset, this), this->kFireInterval));
+
 		// Init
 		shootTimer = kFireInterval;
 	}
@@ -93,5 +96,9 @@ void Enemy::Leave() {
 void Enemy::ApproachInitialize() {
 
 	this->shootTimer = this->kFireInterval;
+
+}
+
+void Enemy::FireTimeReset() {
 
 }

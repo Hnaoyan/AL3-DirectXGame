@@ -5,6 +5,7 @@
 #include <Input.h>
 #include <list>
 #include"EnemyBullet.h"
+#include "TimedCall.h"
 
 enum class Phase {
 	Approach,	// Near
@@ -33,6 +34,8 @@ public:
 
 	static const int kFireInterval = 60;
 
+	void FireTimeReset();
+
 private:
 	static void (Enemy::*spFuncTable[])();
 
@@ -52,4 +55,7 @@ private:
 	Input* input_ = nullptr;
 
 	int32_t shootTimer = 0;
+
+	std::list<TimedCall*> timedCalls_;
+
 };
