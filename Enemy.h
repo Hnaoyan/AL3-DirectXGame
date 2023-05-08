@@ -8,6 +8,29 @@ enum class Phase {
 	Approach,	// Near
 	Leave,		// Leave
 };
+class Enemy;
+
+class BaseEnemyState {
+protected:
+	Enemy* enemy_ = nullptr;
+
+public:
+	virtual void SetEnemy(Enemy* enemy) { enemy_ = enemy; }
+	virtual void Update(){};
+
+};
+
+class EnemyApproach : public BaseEnemyState
+{
+public:
+	void Update();
+};
+
+class EnemyLeave : public BaseEnemyState
+{
+public:
+	void Update();
+};
 
 class Enemy {
 public:
@@ -18,19 +41,16 @@ public:
 	// Draw
 	void Draw(const ViewProjection& viewProjection);
 
-	// Pattern
-	void Approach();
-	void Leave();
-
 	// State
-	//void ChangeState(BaseEnemyState* state);
+	void ChangeState(BaseEnemyState* state);
 
-	//void MoveUpdate(Vector3& velocity);
+	void MoveUpdate(Vector3 velocity);
+
+	Vector3 GetWorldPos() { return this->worldTransform_.translation_; }
+	~Enemy();
 
 private:
-	static void (Enemy::*spFuncTable[])();
-	//BaseEnemyState* state_;
-
+	BaseEnemyState* state_;
 
 	// world
 	WorldTransform worldTransform_;

@@ -12,33 +12,40 @@ void Enemy::Initialize(Model* model) {
 	worldTransform_.Initialize();
 	velocity_ = {0, 0, -0.5f};
 	worldTransform_.translation_ = {0, 1.0f, 50.0f};
+	state_ = new EnemyApproach();
+	state_->SetEnemy(this);
 }
 
-void (Enemy::*Enemy::spFuncTable[])() = {
-	&Enemy::Approach,
-	&Enemy::Leave
-};
+Enemy::~Enemy() { delete state_; }
 
-void Enemy::Approach() {
+void EnemyApproach::Update() {
 	// Move
-	velocity_ = {0, 0, -0.5f};
-
-	if (worldTransform_.translation_.z < 0.0f) {
-		phase_ = Phase::Leave;
+	Vector3 velocity = {0, 0, -0.5f};
+	enemy_->MoveUpdate(velocity);
+	if (enemy_->GetWorldPos().z < 0.0f) {
+		enemy_->ChangeState(new EnemyLeave());
 	}
 }
 
-void Enemy::Leave() {
+void EnemyLeave::Update() {
 	// Move
-	velocity_ = {-0.1f, 0.1f, -0.05f};
+	Vector3 velocity = {-0.1f, 0.1f, -0.05f};
+	enemy_->MoveUpdate(velocity);
+}
 
+void Enemy::MoveUpdate(Vector3 velocity) {
+	worldTransform_.translation_ = worldTransform_.translation_ + velocity;
+}
+
+void Enemy::ChangeState(BaseEnemyState* newState) { 
+	//delete state_;
+	state_ = newState;
+	state_->SetEnemy(this);
 }
 
 void Enemy::Update() {
-	(this->*spFuncTable[static_cast<size_t>(phase_)])();
 
-	worldTransform_.translation_ = worldTransform_.translation_ + velocity_;
-	//worldTransform_.translation_ += velocity_;
+	state_->Update();
 	worldTransform_.UpdateMatrix();
 
 }
