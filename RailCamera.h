@@ -9,7 +9,7 @@ class RailCamera
 {
 public:
 	// 初期化
-	void Initialize();
+	void Initialize(const Vector3& position);
 
 	// 更新
 	void Update();
@@ -19,6 +19,6 @@ private:
 	WorldTransform worldTransform;
 
 	// ビュープロジェクション
-	ViewProjection viewProjection;
+	ViewProjection* viewProjection = nullptr;
 
 };

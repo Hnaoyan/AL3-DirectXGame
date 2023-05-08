@@ -15,6 +15,7 @@ GameScene::~GameScene() {
 	delete enemy_;
 	// デバッグカメラの解放
 	delete debugCamera_;
+	delete railCamera_;
 	// 天球モデル
 	delete skydome_;
 	delete modelSkydome_;
@@ -46,6 +47,10 @@ void GameScene::Initialize() {
 
 	// 敵キャラに自キャラのアドレスを渡す
 	enemy_->SetPlayer(player_);
+
+	// レールカメラ
+	railCamera_ = new RailCamera();
+	railCamera_->Initialize(player_->GetWorldPosition());
 
 	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
