@@ -16,9 +16,9 @@ public:
 
 private:
 	// ワールド変換データ
-	WorldTransform worldTransform;
+	WorldTransform worldTransform_;
 
 	// ビュープロジェクション
-	ViewProjection viewProjection;
+	ViewProjection viewProjection_;
 
 };
