@@ -31,11 +31,10 @@ void GameScene::Initialize() {
 	// モデルデータの生成
 	model_ = Model::Create();
 	// ビュープロジェクションの初期化
-	//viewProjection_.farZ = 2.0f;
-	//viewProjection_.Initialize();
+	viewProjection_.Initialize();
 	// レールカメラ
 	railCamera_ = new RailCamera();
-	railCamera_->Initialize(viewProjection_.translation_, viewProjection_.rotation_);
+	railCamera_->Initialize(Vector3{0, 0, -50.0f}, Vector3{0, 0, 0});
 	// 自キャラ
 	player_ = new Player();
 	player_->Initialize(model_, textureHandle_);

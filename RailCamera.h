@@ -21,4 +21,7 @@ private:
 	// ビュープロジェクション
 	ViewProjection viewProjection_;
 
+	Vector3 addTranslation;
+	Vector3 addRotate;
+
 };
