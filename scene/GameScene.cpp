@@ -32,7 +32,10 @@ void GameScene::Initialize() {
 	model_ = Model::Create();
 	// ビュープロジェクションの初期化
 	//viewProjection_.farZ = 2.0f;
-	viewProjection_.Initialize();
+	//viewProjection_.Initialize();
+	// レールカメラ
+	railCamera_ = new RailCamera();
+	railCamera_->Initialize(viewProjection_.translation_, viewProjection_.rotation_);
 	// 自キャラ
 	player_ = new Player();
 	player_->Initialize(model_, textureHandle_);
@@ -48,10 +51,6 @@ void GameScene::Initialize() {
 	// 敵キャラに自キャラのアドレスを渡す
 	enemy_->SetPlayer(player_);
 
-	// レールカメラ
-	railCamera_ = new RailCamera();
-	railCamera_->Initialize(player_->GetWorldPosition());
-
 	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
 	//debugCamera_->SetFarZ(2.0f);
@@ -64,6 +63,7 @@ void GameScene::Initialize() {
 void GameScene::Update() { 
 	player_->Update();
 	debugCamera_->Update();
+	railCamera_->Update();
 	if (enemy_ != NULL) {
 		enemy_->Update();
 	}
