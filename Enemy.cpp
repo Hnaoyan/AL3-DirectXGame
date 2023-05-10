@@ -83,16 +83,10 @@ void (Enemy::*Enemy::spFuncTable[])() =
 };
 
 void Enemy::Approach() {
-	//shootTimer--;
-	//if (shootTimer == 0) {
-	//	// Fire
-	//	Fire();
-	//	// TimerSet
-	//	timedCalls_.push_back(new TimedCall(std::bind(&Enemy::FireTimeReset, this), this->kFireInterval));
-
-	//	// Init
-	//	shootTimer = kFireInterval;
-	//}
+	shootTimer--;
+	if (shootTimer == 0) {
+		FireTimeReset();
+	}
 
 	// Move
 	velocity_ = {0, 0, -0.1f};
@@ -119,5 +113,5 @@ void Enemy::FireTimeReset() {
 	Fire();
 
 	// reset
-	timedCalls_.push_back(new TimedCall(std::bind(&Enemy::FireTimeReset, this), shootTimer));
+	timedCalls_.push_back(new TimedCall(std::bind(&Enemy::FireTimeReset, this), kFireInterval));
 }

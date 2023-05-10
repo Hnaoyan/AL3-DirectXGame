@@ -2,7 +2,7 @@
 
 TimedCall::TimedCall(std::function<void(void)> f, uint32_t time) { 
 	time_ = time;
-	
+	this->f_ = f;
 }
 
 void TimedCall::Update() { 
@@ -13,7 +13,7 @@ void TimedCall::Update() {
 	if (time_ <= 0) {
 		isComp_ = true;
 		// コールバック関数呼び出し
-		this->f();
+		this->f_();
 	}
 
 }

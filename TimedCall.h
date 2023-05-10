@@ -15,7 +15,7 @@ public:
 
 private:
 	// コールバック
-	std::function<void(void)> f;
+	std::function<void(void)> f_;
 	// 残り時間
 	uint32_t time_ = 0;
 	// 完了フラグ
