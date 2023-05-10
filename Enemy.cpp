@@ -7,6 +7,9 @@ Enemy::~Enemy() {
 	for (EnemyBullet* bullet : bullets_) {
 		delete bullet;
 	}
+	for (TimedCall* timecalls : timedCalls_) {
+		delete timecalls;
+	}
 }
 
 void Enemy::Initialize(Model* model) { 
@@ -30,6 +33,18 @@ void Enemy::Update() {
 		}
 		return false;
 	});
+
+	timedCalls_.remove_if([](TimedCall* timecalls) {
+		if (timecalls->IsFinished()) {
+			delete timecalls;
+			return true;
+		}
+		return false;
+	});
+
+	for (TimedCall* timedCalls : timedCalls_) {
+		timedCalls->Update();
+	}
 
 	(this->*spFuncTable[static_cast<size_t>(phase_)])();
 
@@ -68,16 +83,16 @@ void (Enemy::*Enemy::spFuncTable[])() =
 };
 
 void Enemy::Approach() {
-	shootTimer--;
-	if (shootTimer == 0) {
-		// Fire
-		Fire();
-		// TimerSet
-		timedCalls_.push_back(new TimedCall(std::bind(&Enemy::FireTimeReset, this), this->kFireInterval));
+	//shootTimer--;
+	//if (shootTimer == 0) {
+	//	// Fire
+	//	Fire();
+	//	// TimerSet
+	//	timedCalls_.push_back(new TimedCall(std::bind(&Enemy::FireTimeReset, this), this->kFireInterval));
 
-		// Init
-		shootTimer = kFireInterval;
-	}
+	//	// Init
+	//	shootTimer = kFireInterval;
+	//}
 
 	// Move
 	velocity_ = {0, 0, -0.1f};
@@ -96,9 +111,13 @@ void Enemy::Leave() {
 void Enemy::ApproachInitialize() {
 
 	this->shootTimer = this->kFireInterval;
-
+	
 }
 
 void Enemy::FireTimeReset() {
+	// Fire
+	Fire();
 
+	// reset
+	timedCalls_.push_back(new TimedCall(std::bind(&Enemy::FireTimeReset, this), shootTimer));
 }

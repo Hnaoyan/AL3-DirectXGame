@@ -15,9 +15,9 @@ public:
 
 private:
 	// コールバック
-	std::function<int(void)> f;
+	std::function<void(void)> f;
 	// 残り時間
-	uint32_t time_;
+	uint32_t time_ = 0;
 	// 完了フラグ
 	bool isComp_ = false;
 };
