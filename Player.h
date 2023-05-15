@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Model.h"
 #include "WorldTransform.h"
 #include <Input.h>
@@ -39,6 +39,10 @@ public:
 	const std::list<PlayerBullet*>& GetBullets() { return bullets_; }
 
 	const float radius = 15.0f;
+
+	// 親となるワールドトランスフォームをセット
+	// <param name="parent">親となるワールドトランスフォーム</param>
+	void SetParent(const WorldTransform* parent);
 
 private:
 	// WorldData

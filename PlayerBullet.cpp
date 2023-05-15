@@ -1,4 +1,4 @@
-#include "PlayerBullet.h"
+﻿#include "PlayerBullet.h"
 #include <assert.h>
 #include"MathCalc.h"
 
@@ -13,6 +13,7 @@ void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vecto
 	worldTransform_.Initialize();
 	// InitialPositionReset
 	this->worldTransform_.translation_ = position;
+
 	// 
 	this->velocity_ = velocity;
 }
@@ -23,7 +24,8 @@ void PlayerBullet::Update() {
 		isDead_ = true;
 	}
 	// positionMove
-	MoveVector(worldTransform_.translation_, velocity_);
+	worldTransform_.translation_ = worldTransform_.translation_ + velocity_;
+
 	this->worldTransform_.UpdateMatrix();
 }
 
@@ -40,7 +42,9 @@ void PlayerBullet::OnCollision() {
 Vector3 PlayerBullet::GetWorldPosition() {
 	Vector3 worldPos;
 
-	worldPos = TransformNormal(worldTransform_.translation_, worldTransform_.matWorld_);
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
 
 	return worldPos;
 }

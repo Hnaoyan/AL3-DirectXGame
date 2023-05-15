@@ -1,4 +1,4 @@
-#include "Player.h"
+﻿#include "Player.h"
 #include<cassert>
 #include "ImGuiManager.h"
 #include "MathCalc.h"
@@ -17,7 +17,8 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	this->model_ = model;
 	this->textureHandle_ = textureHandle;
 	worldTransform_.Initialize();
-	worldTransform_.translation_ = {0, 0, 0};
+	worldTransform_.translation_ = {0, 0, 30.0f};
+	
 	// SingleInstance
 	this->input_ = Input::GetInstance();
 }
@@ -62,11 +63,9 @@ void Player::Update() {
 	    Multiply(MakeRotateYMatrix(worldTransform_.rotation_.y), MakeRotateZMatrix(worldTransform_.rotation_.z)));
 	// translate
 	Matrix4x4 translate = MakeTranslateMatrix(worldTransform_.translation_);
-	// affine
-	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 
 	// Matrix to Transform
-	worldTransform_.TransferMatrix();
+	worldTransform_.UpdateMatrix();
 
 	// CharacterMoveVector
 	Vector3 move = {0, 0, 0};
@@ -89,9 +88,7 @@ void Player::Update() {
 	}
 
 	// PositionMove
-	//MoveVector(worldTransform_.translation_, move);
 	worldTransform_.translation_ = worldTransform_.translation_ + move;
-	//worldTransform_.translation_ += move;
 	Rotate();
 	Attack();
 
@@ -106,7 +103,7 @@ void Player::Update() {
 	worldTransform_.translation_.z};
 	ImGui::Begin("pos");
 	ImGui::InputFloat3("float3", inputFloat3);
-	ImGui::SliderFloat3("position", inputFloat3, -10.0f, 10.0f);
+	ImGui::SliderFloat3("position", inputFloat3, -50.0f, 50.0f);
 	ImGui::End();
 
 	worldTransform_.translation_.x = inputFloat3[0];
@@ -128,8 +125,10 @@ void Player::Draw(ViewProjection& viewProjection) {
 Vector3 Player::GetWorldPosition() { 
 	Vector3 worldPos;
 
-	worldPos = TransformNormal(worldTransform_.translation_, worldTransform_.matWorld_);
-
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
+	
 	return worldPos;
 }
 
@@ -143,9 +142,11 @@ void Player::Attack() {
 		// BulletRotate
 		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 
+		Vector3 worldPos = GetWorldPosition();
+
 		// BulletGeneration
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, this->worldTransform_.translation_, velocity);
+		newBullet->Initialize(model_, worldPos, velocity);
 
 		// 
 		bullets_.push_back(newBullet);
@@ -154,4 +155,9 @@ void Player::Attack() {
 
 void Player::OnCollision() {
 
+}
+
+void Player::SetParent(const WorldTransform* parent) {
+	// 親子関係を結ぶ
+	worldTransform_.parent_ = parent;
 }

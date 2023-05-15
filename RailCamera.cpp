@@ -8,9 +8,6 @@ void RailCamera::Initialize(const Vector3& position,const Vector3& rotate) {
 	worldTransform_.rotation_ = rotate;
 	worldTransform_.scale_ = {1.0f, 1.0f, 1.0f};
 
-	addTranslation = {};
-	addRotate = {};
-
 	// ビュープロジェクションの初期化
 	// farZの値変更
 
@@ -20,30 +17,30 @@ void RailCamera::Initialize(const Vector3& position,const Vector3& rotate) {
 
 void RailCamera::Update() { 
 
-	worldTransform_.translation_.x = worldTransform_.translation_.x + addTranslation.x;
-	worldTransform_.translation_.y = worldTransform_.translation_.y + addTranslation.y;
-	worldTransform_.translation_.z = worldTransform_.translation_.z + addTranslation.z;
-	worldTransform_.rotation_.x = worldTransform_.rotation_.x + addRotate.x;
-	worldTransform_.rotation_.y = worldTransform_.rotation_.y + addRotate.y;
-	worldTransform_.rotation_.z = worldTransform_.rotation_.z + addRotate.z;
+	//worldTransform_.translation_.z = worldTransform_.translation_.z - 0.1f;
+	worldTransform_.rotation_.y = worldTransform_.rotation_.y + 0.01f;
 
 	// カメラ座標を表示
 	ImGui::Begin("Camera");
-	float inputFloatPos[3] = {addTranslation.x, addTranslation.y, addTranslation.z};
-	float inputFloatRot[3] = {addRotate.x, addRotate.y, addRotate.z};
+	float inputFloatPos[3] = {
+	    worldTransform_.translation_.x, worldTransform_.translation_.y,
+	    worldTransform_.translation_.z};
+	float inputFloatRot[3] = {
+	    worldTransform_.rotation_.x, worldTransform_.rotation_.y, worldTransform_.rotation_.z};
 	ImGui::SliderFloat3("sliderFloat3", inputFloatPos, -100.0f, 100.0f);
 	ImGui::SliderFloat3("rotate", inputFloatRot, -100.0f, 100.0f);
 	ImGui::End();
-	addTranslation.x = inputFloatPos[0];
-	addTranslation.y = inputFloatPos[1];
-	addTranslation.z = inputFloatPos[2];
+	worldTransform_.translation_.x = inputFloatPos[0];
+	worldTransform_.translation_.y = inputFloatPos[1];
+	worldTransform_.translation_.z = inputFloatPos[2];
+	worldTransform_.rotation_.x = inputFloatRot[0];
+	worldTransform_.rotation_.y = inputFloatRot[1];
+	worldTransform_.rotation_.z = inputFloatRot[2];
 
 	
-	//  affine
+	//  アフィン変換
 	worldTransform_.matWorld_ = MakeAffineMatrix(
 	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
-
-	//worldTransform_.UpdateMatrix();
 
 	// カメラオブジェクトのワールド行列からビュー行列を計算する
 	viewProjection_.matView = MakeInverse(worldTransform_.matWorld_);

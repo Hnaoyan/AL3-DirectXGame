@@ -14,14 +14,15 @@ public:
 	// 更新
 	void Update();
 
+	ViewProjection& GetViewCamera() { return viewProjection_; }
+
+	WorldTransform& GetWorldMatrix() { return worldTransform_; }
+
 private:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
 
 	// ビュープロジェクション
 	ViewProjection viewProjection_;
-
-	Vector3 addTranslation;
-	Vector3 addRotate;
 
 };
