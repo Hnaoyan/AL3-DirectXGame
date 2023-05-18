@@ -1,16 +1,17 @@
-#include "Enemy.h"
+﻿#include "Enemy.h"
 #include "MathCalc.h"
 #include <assert.h>
 #include "TextureManager.h"
 #include "Player.h"
+#include "GameScene.h"
 
 Enemy::~Enemy() { 
-	for (EnemyBullet* bullet : bullets_) {
-		delete bullet;
-	}
+	//for (EnemyBullet* bullet : enemyBullets_) {
+	//	delete bullet;
+	//}
 }
 
-void Enemy::Initialize(Model* model) { 
+void Enemy::Initialize(Model* model,GameScene* gameScene, Vector3 position) { 
 	assert(model);
 
 	input_ = Input::GetInstance();
@@ -19,39 +20,29 @@ void Enemy::Initialize(Model* model) {
 
 	worldTransform_.Initialize();
 	velocity_ = {0, 0, -0.5f};
-	worldTransform_.translation_ = {10.0f, 1.0f, 100.0f};
+	//worldTransform_.translation_ = {10.0f, 1.0f, 100.0f};
+	worldTransform_.translation_ = position;
+	shootTimer = kFireInterval;
+
+	SetGameScene(gameScene);
 
 	ApproachInitialize();
 
 }
 
 void Enemy::Update() {
-	// BulletDeathFlag
-	bullets_.remove_if([](EnemyBullet* bullet) {
-		if (bullet->IsDead()) {
-			delete bullet;
-			return true;
-		}
-		return false;
-	});
 
 	(this->*spFuncTable[static_cast<size_t>(phase_)])();
 
 	worldTransform_.translation_ = worldTransform_.translation_ + velocity_;
 	worldTransform_.UpdateMatrix();
 
-	for (EnemyBullet* bullet : bullets_) {
-		bullet->Update();
-	}
 }
 
 void Enemy::Draw(const ViewProjection& viewProjection) {
 	
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 
-	for (EnemyBullet* bullet : bullets_) {
-		bullet->Draw(viewProjection);
-	}
 }
 
 Vector3 Enemy::GetWolrdPosition() {
@@ -80,8 +71,8 @@ void Enemy::Fire() {
 	// Initialize
 	EnemyBullet* newBullet = new EnemyBullet();
 	newBullet->Initialize(model_, this->worldTransform_.translation_,velocity);
-
-	bullets_.push_back(newBullet);
+	
+	gameScene_->AddEnemyBullet(newBullet);
 }
 
 void (Enemy::*Enemy::spFuncTable[])() = 
@@ -119,6 +110,6 @@ void Enemy::ApproachInitialize() {
 
 }
 
-void Enemy::OnCollision() {
-
+void Enemy::OnCollision() { 
+	isDead_ = true;
 }

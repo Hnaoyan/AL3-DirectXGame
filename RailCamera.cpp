@@ -18,7 +18,7 @@ void RailCamera::Initialize(const Vector3& position,const Vector3& rotate) {
 void RailCamera::Update() { 
 
 	//worldTransform_.translation_.z = worldTransform_.translation_.z - 0.1f;
-	worldTransform_.rotation_.y = worldTransform_.rotation_.y + 0.01f;
+	//worldTransform_.rotation_.y = worldTransform_.rotation_.y + 0.01f;
 
 	// カメラ座標を表示
 	ImGui::Begin("Camera");

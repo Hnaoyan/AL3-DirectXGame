@@ -1,13 +1,14 @@
-#pragma once
+﻿#pragma once
 #include"WorldTransform.h"
 #include"Model.h"
 #include"TextureManager.h"
 #include <Input.h>
 #include <list>
 #include"EnemyBullet.h"
-//#include"Player.h"
 
 class Player;
+
+class GameScene;
 
 enum class Phase {
 	Approach,	// Near
@@ -17,7 +18,7 @@ enum class Phase {
 class Enemy {
 public:
 	// Initialize
-	void Initialize(Model* model);
+	void Initialize(Model* model, GameScene* gameScene, Vector3 position);
 	// Update
 	void Update();
 	// Draw
@@ -35,18 +36,32 @@ public:
 
 	void ApproachInitialize();
 
+
 	~Enemy();
 
-	static const int kFireInterval = 60;
+	// 弾の発射間隔
+	static const int kFireInterval = 80;
 
 	void SetPlayer(Player* player) { player_ = player; }
 
-	// WolrdPosGet
+	// ワールド座標を取得
 	Vector3 GetWolrdPosition();
 
-	const std::list<EnemyBullet*>& GetBullets() { return bullets_; }
-
+	/// <summary>
+	/// 弾のリスト
+	/// </summary>
+	/// <returns>弾のリスト</returns>
+	const std::list<EnemyBullet*>& GetBullets() { return enemyBullets_; }
+	
+	//　半径
 	const float radius = 15.0f;
+
+	// ゲームシーンのポインタを取得
+	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
+
+	// 死亡フラグを返す
+	bool IsDead() const { return isDead_; }
+
 
 private:
 	static void (Enemy::*spFuncTable[])();
@@ -65,9 +80,15 @@ private:
 	// Phase	
 	Phase phase_ = Phase::Approach;
 	// Bullet
-	std::list<EnemyBullet*> bullets_;
+	std::list<EnemyBullet*> enemyBullets_;
 	// Keyboard
 	Input* input_ = nullptr;
 
+	// ゲームシーン
+	GameScene* gameScene_ = nullptr;
+
 	int32_t shootTimer = 0;
+
+	// 死亡フラグ
+	bool isDead_ = false;
 };
