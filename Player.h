@@ -5,6 +5,7 @@
 #include"Matrix.h"
 #include "PlayerBullet.h"
 #include <list>
+#include "Sprite.h"
 
 class Player
 {
@@ -15,11 +16,13 @@ public:
 	void Initialize(Model* model,uint32_t textureHandle);
 
 	/// Update
-	void Update();
+	void Update(ViewProjection& viewProjection);
 
 	/// Draw
 	/// <param name="viewProject">ViewProjection</param>
 	void Draw(ViewProjection& viewProjection);
+
+	void DrawUI();
 
 	// Rotate
 	void Rotate();
@@ -47,10 +50,22 @@ public:
 private:
 	// WorldData
 	WorldTransform worldTransform_;
+
+	// 3Dレティクル用ワールドトランスフォーム
+	WorldTransform worldTransform3DReticle_;
+
 	// Model
 	Model* model_ = nullptr;
+
+	Model* offsetModel_ = nullptr;
+
+	// 2Dレティクル用
+	Sprite* sprite2DReticle_ = nullptr;
+
 	// Handle
 	uint32_t textureHandle_ = 0u;
+
+	uint32_t offsetTexture_ = 0u;
 
 	// Keyboard
 	Input* input_ = nullptr;

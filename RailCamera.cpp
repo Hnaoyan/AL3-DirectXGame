@@ -39,11 +39,11 @@ void RailCamera::Update() {
 
 	
 	//  アフィン変換
-	worldTransform_.matWorld_ = MakeAffineMatrix(
+	worldTransform_.matWorld_ = Matrix::MakeAffineMatrix(
 	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 
 	// カメラオブジェクトのワールド行列からビュー行列を計算する
-	viewProjection_.matView = MakeInverse(worldTransform_.matWorld_);
+	viewProjection_.matView = Matrix::MakeInverse(worldTransform_.matWorld_);
 	// ビュープロジェクションを転送
 	viewProjection_.TransferMatrix();
 }
