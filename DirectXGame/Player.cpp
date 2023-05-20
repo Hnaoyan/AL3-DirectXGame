@@ -7,6 +7,7 @@ Player::~Player() {
 	for (PlayerBullet* bullet : bullets_) {
 		delete bullet;
 	}
+	delete sprite2DReticle_;
 	
 }
 
@@ -31,7 +32,6 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 
 	// スプライト生成
 	sprite2DReticle_ = Sprite::Create(textureReticle,Vector2(0,0),Vector4(1,1,1,1),Vector2(0.5f,0.5f));
-	delete sprite2DReticle_;
 }
 
 void Player::Rotate() {
@@ -84,7 +84,7 @@ void Player::Update(ViewProjection& viewProjection) {
 	Vector3 move = {0, 0, 0};
 
 	// CharacterMoveSpeed
-	const float kCharacterSpeed = 0.2f;
+	const float kCharacterSpeed = 0.5f;
 
 	// PressDirectChangeVector(LeftRight)
 	if (this->input_->PushKey(DIK_LEFT)) {
@@ -129,7 +129,7 @@ void Player::Update(ViewProjection& viewProjection) {
 	{
 		// 自機のワールド座標から3Dレティクルのワールド座標を計算
 		// 自機から3Dレティクルへの距離
-		const float kDistancePlayerTo3DReticle = 35.0f;
+		const float kDistancePlayerTo3DReticle = 20.0f;
 		// 自機から3Dレティクルへのオフセット(Z+向き)
 		Vector3 offset = {0, 0, 1.0f};
 		// 自機のワールド行列の回転を反映
@@ -180,6 +180,7 @@ void Player::Draw(ViewProjection& viewProjection) {
 
 void Player::DrawUI() { 
 	sprite2DReticle_->Draw(); 
+
 }
 
 Vector3 Player::GetWorldPosition() { 
