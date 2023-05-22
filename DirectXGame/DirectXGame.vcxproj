@@ -119,6 +119,7 @@
     <ClCompile Include="scene\GameScene.cpp" />
     <ClCompile Include="MathCalc.cpp" />
     <ClCompile Include="Skydome.cpp" />
+    <ClCompile Include="TimedCall.cpp" />
     <ClCompile Include="WorldTransformEx.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -158,6 +159,7 @@
     <ClInclude Include="scene\GameScene.h" />
     <ClInclude Include="MathCalc.h" />
     <ClInclude Include="Skydome.h" />
+    <ClInclude Include="TimedCall.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\TerrainPS.hlsl">

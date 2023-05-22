@@ -5,6 +5,7 @@
 #include <Input.h>
 #include <list>
 #include"EnemyBullet.h"
+#include"TimedCall.h"
 
 class Player;
 
@@ -62,6 +63,7 @@ public:
 	// 死亡フラグを返す
 	bool IsDead() const { return isDead_; }
 
+	void FireTimeReset();
 
 private:
 	static void (Enemy::*spFuncTable[])();
@@ -91,4 +93,6 @@ private:
 
 	// 死亡フラグ
 	bool isDead_ = false;
+
+	std::list<TimedCall*> timedCalls_;
 };
