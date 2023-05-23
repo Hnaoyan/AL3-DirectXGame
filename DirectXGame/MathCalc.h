@@ -26,5 +26,7 @@ public:
 	static Vector2 Normalize(const Vector2& v);
 	static Vector3 Normalize(const Vector3& v);
 
+	static Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t);
+	static Vector3 Slerp(const Vector3& v1, const Vector3& v2, float t);
 
 };

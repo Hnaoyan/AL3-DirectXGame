@@ -77,3 +77,21 @@ Vector3 MathCalc::Normalize(const Vector3& v) {
 	return result;
 }
 
+Vector3 MathCalc::Lerp(const Vector3& v1, const Vector3& v2, float t) { 
+	Vector3 result;
+
+	result.x = (1.0f - t) * v1.x + t * v2.x;
+	result.y = (1.0f - t) * v1.y + t * v2.y;
+
+	return result;
+}
+
+Vector3 MathCalc::Slerp(const Vector3& v1, const Vector3& v2, float t) {
+	Vector3 result;
+
+	float Outer = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+	
+
+
+	return result;
+}
