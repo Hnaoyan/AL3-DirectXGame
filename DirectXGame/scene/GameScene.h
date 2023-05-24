@@ -13,6 +13,7 @@
 #include "Skydome.h"
 #include "DebugCamera.h"
 #include "RailCamera.h"
+#include "Collider.h"
 
 /// <summary>
 /// ゲームシーン
@@ -89,6 +90,10 @@ private: // メンバ変数
 	int32_t count = 0;
 
 	int32_t deathTimer = 0;
+	/// <summary>
+	/// コライダー2つの衝突判定と応答
+	/// </summary>
+	void CheckCollisionPair(Collider* colliderA, Collider* colliderB);
 
 	/// <summary>
 	/// ゲームシーン用

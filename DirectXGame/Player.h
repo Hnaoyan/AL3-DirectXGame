@@ -6,8 +6,9 @@
 #include "PlayerBullet.h"
 #include <list>
 #include "Sprite.h"
+#include "Collider.h"
 
-class Player
+class Player : public Collider
 {
 public:
 	/// Initialize
@@ -34,10 +35,10 @@ public:
 	~Player();
 
 	// Collision
-	void OnCollision();
+	void OnCollision() override;
 
 	// WorldPosition
-	Vector3 GetWorldPosition();
+	Vector3 GetWorldPosition() override;
 
 	const std::list<PlayerBullet*>& GetBullets() { return bullets_; }
 

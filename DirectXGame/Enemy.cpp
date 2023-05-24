@@ -45,7 +45,7 @@ void Enemy::Draw(const ViewProjection& viewProjection) {
 
 }
 
-Vector3 Enemy::GetWolrdPosition() {
+Vector3 Enemy::GetWorldPosition() {
 	Vector3 worldPos = Matrix::GetWorldPosition(worldTransform_.matWorld_);
 
 	return worldPos;
@@ -57,7 +57,7 @@ void Enemy::Fire() {
 	// Velocity
 	const float kBulletSpeed = 0.5f;
 	Vector3 playerPosition = player_->GetWorldPosition();
-	Vector3 enemyPosition = this->GetWolrdPosition();
+	Vector3 enemyPosition = this->GetWorldPosition();
 
 	Vector3 vectorDiff = playerPosition - enemyPosition;
 	vectorDiff = MathCalc::Normalize(vectorDiff);

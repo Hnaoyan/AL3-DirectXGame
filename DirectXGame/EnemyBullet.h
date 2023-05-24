@@ -2,8 +2,10 @@
 #include "Vector3.h"
 #include <Model.h>
 #include <WorldTransform.h>
+#include "Collider.h"
 
-class EnemyBullet {
+class EnemyBullet : public Collider
+{
 public:
 	void Initialize(Model* model, const Vector3& position, const Vector3& velocity);
 
@@ -14,9 +16,9 @@ public:
 	bool IsDead() const { return isDead_; }
 
 	// Collision
-	void OnCollision();
+	void OnCollision() override;
 
-	Vector3 GetWorldPosition();
+	Vector3 GetWorldPosition() override;
 
 	const float radius = 10.0f;
 

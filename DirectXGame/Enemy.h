@@ -6,6 +6,7 @@
 #include <list>
 #include"EnemyBullet.h"
 #include"TimedCall.h"
+#include "Collider.h"
 
 class Player;
 
@@ -16,7 +17,8 @@ enum class Phase {
 	Leave,		// Leave
 };
 
-class Enemy {
+class Enemy : public Collider
+{
 public:
 	// Initialize
 	void Initialize(Model* model, GameScene* gameScene, Vector3 position);
@@ -30,23 +32,22 @@ public:
 	void Leave();
 
 	// Collision
-	void OnCollision();
+	void OnCollision() override;
+
+	// ワールド座標を取得
+	Vector3 GetWorldPosition() override;
 
 	// Bullet
 	void Fire();
 
 	void ApproachInitialize();
 
+	void SetPlayer(Player* player) { player_ = player; }
 
 	~Enemy();
 
 	// 弾の発射間隔
 	static const int kFireInterval = 80;
-
-	void SetPlayer(Player* player) { player_ = player; }
-
-	// ワールド座標を取得
-	Vector3 GetWolrdPosition();
 
 	/// <summary>
 	/// 弾のリスト
@@ -63,7 +64,7 @@ public:
 	// 死亡フラグを返す
 	bool IsDead() const { return isDead_; }
 
-	void FireTimeReset();
+	//void FireTimeReset();
 
 private:
 	static void (Enemy::*spFuncTable[])();
@@ -78,7 +79,7 @@ private:
 	// Texture
 	uint32_t textureHandle_ = 0u;
 	// Velocity
-	Vector3 velocity_;
+	Vector3 velocity_ = {};
 	// Phase	
 	Phase phase_ = Phase::Approach;
 	// Bullet
