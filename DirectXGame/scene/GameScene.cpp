@@ -197,6 +197,21 @@ void GameScene::Draw() {
 void GameScene::CheckAllCollision() {
 	// 自弾リストの取得
 	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
+	// コライダー
+	std::list<Collider*> colliders_;
+	// コライダーをリストに登録
+	colliders_.push_back(player_);
+	for (Enemy* enemy : enemys_) {
+		colliders_.push_back(enemy);
+	}
+	// 自キャラと敵弾全ての当たり判定
+	for (EnemyBullet* enemyBullet : enemyBullets_) {
+		colliders_.push_back(enemyBullet);
+	}
+	for (PlayerBullet* playerBullet : playerBullets) {
+		colliders_.push_back(playerBullet);
+	}
+
 #pragma region 自キャラと敵弾の当たり判定
 	// 自キャラと敵弾全ての当たり判定
 	for (EnemyBullet* bullet : enemyBullets_) {
