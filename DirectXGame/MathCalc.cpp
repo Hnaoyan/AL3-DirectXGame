@@ -87,11 +87,11 @@ Vector3 MathCalc::Lerp(const Vector3& v1, const Vector3& v2, float t) {
 }
 
 Vector3 MathCalc::Slerp(const Vector3& v1, const Vector3& v2, float t) {
-	Vector3 result;
+	Vector3 result = {};
 
 	float Outer = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 	
-
+	Outer = Outer * t;
 
 	return result;
 }
