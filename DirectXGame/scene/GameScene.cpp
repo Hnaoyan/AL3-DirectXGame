@@ -212,6 +212,22 @@ void GameScene::CheckAllCollision() {
 		colliders_.push_back(playerBullet);
 	}
 
+	// リスト内のペアを総当たり
+	std::list<Collider*>::iterator itrA = colliders_.begin();
+	for (; itrA != colliders_.end(); ++itrA) {
+		//itrA = colliders_
+
+		// イテレータBはイテレータAの次の要素から回す（重複判定を回避）
+		std::list<Collider*>::iterator itrB = itrA;
+		itrB++;
+
+		for (; itrB != colliders_.end(); ++itrB) {
+		
+
+		}
+
+	}
+
 #pragma region 自キャラと敵弾の当たり判定
 	// 自キャラと敵弾全ての当たり判定
 	for (EnemyBullet* bullet : enemyBullets_) {
