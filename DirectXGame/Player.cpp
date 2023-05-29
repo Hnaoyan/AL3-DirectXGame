@@ -89,8 +89,6 @@ void Player::Update(ViewProjection& viewProjection) {
 	// CharacterMoveSpeed
 	const float kCharacterSpeed = 0.5f;
 
-	
-
 	// PressDirectChangeVector(LeftRight)
 	if (this->input_->PushKey(DIK_LEFT)) {
 		move.x -= kCharacterSpeed;
@@ -103,6 +101,28 @@ void Player::Update(ViewProjection& viewProjection) {
 		move.y += kCharacterSpeed;
 	} else if (this->input_->PushKey(DIK_DOWN)) {
 		move.y -= kCharacterSpeed;
+	}
+		
+	// ゲームパッドの状態を得る変数(XINPUT)
+	XINPUT_STATE joyState;
+
+	// ジョイスティック状態取得
+	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+		move.x += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * kCharacterSpeed;
+		move.y += (float)joyState.Gamepad.sThumbLY / SHRT_MAX * kCharacterSpeed;
+
+	}
+
+	// レティクル
+	// スプライトの現在座標を取得
+	Vector2 spritePosition = sprite2DReticle_->GetPosition();
+
+	// ジョイスティック状態取得
+	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+		spritePosition.x += (float)joyState.Gamepad.sThumbRX / SHRT_MAX * 5.0f;
+		spritePosition.y -= (float)joyState.Gamepad.sThumbRY / SHRT_MAX * 5.0f;
+		// スプライトの座標変更を反映
+		sprite2DReticle_->SetPosition(spritePosition);
 	}
 
 	// プレイヤー移動
@@ -131,41 +151,38 @@ void Player::Update(ViewProjection& viewProjection) {
 	worldTransform_.translation_.x = inputFloat3[0];
 	worldTransform_.translation_.y = inputFloat3[1];
 	worldTransform_.translation_.z = inputFloat3[2];
-	{
-		// 自機のワールド座標から3Dレティクルのワールド座標を計算
-		// 自機から3Dレティクルへの距離
-		const float kDistancePlayerTo3DReticle = 20.0f;
-		// 自機から3Dレティクルへのオフセット(Z+向き)
-		Vector3 offset = {0, 0, 1.0f};
-		// 自機のワールド行列の回転を反映
-		offset = MathCalc::TransformNormal(offset, worldTransform_.matWorld_);
-		// ベクトルの長さを整える
-		offset = {
-		    MathCalc::Normalize(offset).x * kDistancePlayerTo3DReticle,
-		    MathCalc::Normalize(offset).y * kDistancePlayerTo3DReticle,
-		    MathCalc::Normalize(offset).z * kDistancePlayerTo3DReticle};
-		// 座標設定
-		worldTransform3DReticle_.translation_ = worldTransform_.translation_ + offset;
-		worldTransform3DReticle_.UpdateMatrix();
-	}
-	// 3Dレティクルのワールド座標から2Dレティクルのスクリーン座標を計算
-	{
-		Vector3 positionReticle = Matrix::GetWorldPosition(worldTransform3DReticle_.matWorld_);
+	//{
+	//	// 自機のワールド座標から3Dレティクルのワールド座標を計算
+	//	// 自機から3Dレティクルへの距離
+	//	const float kDistancePlayerTo3DReticle = 20.0f;
+	//	// 自機から3Dレティクルへのオフセット(Z+向き)
+	//	Vector3 offset = {0, 0, 1.0f};
+	//	// 自機のワールド行列の回転を反映
+	//	offset = MathCalc::TransformNormal(offset, worldTransform_.matWorld_);
+	//	// ベクトルの長さを整える
+	//	offset = {
+	//	    MathCalc::Normalize(offset).x * kDistancePlayerTo3DReticle,
+	//	    MathCalc::Normalize(offset).y * kDistancePlayerTo3DReticle,
+	//	    MathCalc::Normalize(offset).z * kDistancePlayerTo3DReticle};
+	//	// 座標設定
+	//	worldTransform3DReticle_.translation_ = worldTransform_.translation_ + offset;
+	//	worldTransform3DReticle_.UpdateMatrix();
+	//}
+	//// 3Dレティクルのワールド座標から2Dレティクルのスクリーン座標を計算
+	//{
+	//	Vector3 positionReticle = Matrix::GetWorldPosition(worldTransform3DReticle_.matWorld_);
+	//	// ビューポート行列
+	//	Matrix4x4 matViewport =
+	//	    Matrix::MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
+	//	// ビューポート行列
+	//	Matrix4x4 matViewProjectionViewport = Matrix::Multiply(
+	//	    Matrix::Multiply(viewProjection.matView, viewProjection.matProjection), matViewport);
+	//	// ワールド→スクリーン座標変換
+	//	positionReticle = Matrix::Transform(positionReticle, matViewProjectionViewport);
+	//	// スプライトのレティクルに座標設定
+	//	sprite2DReticle_->SetPosition(Vector2(positionReticle.x, positionReticle.y));
+	//}
 
-		// ビューポート行列
-		Matrix4x4 matViewport =
-		    Matrix::MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
-
-		// ビューポート行列
-		Matrix4x4 matViewProjectionViewport = Matrix::Multiply(
-		    Matrix::Multiply(viewProjection.matView, viewProjection.matProjection), matViewport);
-
-		// ワールド→スクリーン座標変換
-		positionReticle = Matrix::Transform(positionReticle, matViewProjectionViewport);
-
-		// スプライトのレティクルに座標設定
-		sprite2DReticle_->SetPosition(Vector2(positionReticle.x, positionReticle.y));
-	}
 	{
 		// ビューポート行列
 		Matrix4x4 matViewport =
@@ -180,6 +197,7 @@ void Player::Update(ViewProjection& viewProjection) {
 		ScreenToClient(hwnd, &mousePosition);
 		Vector2 mouse = {float(mousePosition.x), float(mousePosition.y)};
 		sprite2DReticle_->SetPosition(mouse);
+		
 
 		// ビュープロジェクションビューポート合成行列
 		Matrix4x4 matVPV = Matrix::Multiply(
@@ -188,31 +206,41 @@ void Player::Update(ViewProjection& viewProjection) {
 		Matrix4x4 matInverseVPV = Matrix::MakeInverse(matVPV);
 	
 		// スクリーン座標
-		Vector3 posNear = Vector3(WinApp::kWindowWidth, WinApp::kWindowHeight, 0);
-		Vector3 posFar = Vector3(WinApp::kWindowWidth, WinApp::kWindowHeight, 1);
-	
+		//Vector3 posNear =
+		//    Vector3(sprite2DReticle_->GetPosition().x, sprite2DReticle_->GetPosition().y, 0);
+		//Vector3 posFar =
+		//    Vector3(sprite2DReticle_->GetPosition().x, sprite2DReticle_->GetPosition().y, 1);
+
+		Vector3 posNear = Vector3(mouse.x, mouse.y, 0);
+		Vector3 posFar = Vector3(mouse.x, mouse.y, 1);
+
 		// スクリーン座標系からワールド座標系へ
 		posNear = Matrix::Transform(posNear, matInverseVPV);
 		posFar = Matrix::Transform(posFar, matInverseVPV);
 
 		// マウスレイの方向
-		Vector3 mouseDirection = Vector::Subtract(posNear, posFar);
+		Vector3 mouseDirection = Vector::Subtract(posFar, posNear);
 		mouseDirection = MathCalc::Normalize(mouseDirection);
-		// カメラから照準オブジェクトの距離
-		const float kDistanceTestObject = 50.0f;
-		worldTransform3DReticle_.translation_ = Vector3(Vector::Add(posNear, mouseDirection));
-		//worldTransform3DReticle_.translation_.x =
-		//    Vector3(Vector::Subtract(posNear, mouseDirection)).x + kDistanceTestObject;
+		//カメラから照準オブジェクトの距離
+		const float kDistanceTestObject = 100.0f;
+		mouseDirection.x *= kDistanceTestObject;
+		mouseDirection.y *= kDistanceTestObject;
+		mouseDirection.z *= kDistanceTestObject;
 
-		//worldTransform3DReticle_.translation_.y =
-		//    Vector3(Vector::Subtract(posNear, mouseDirection)).y + kDistanceTestObject;
-		worldTransform3DReticle_.translation_.x += kDistanceTestObject;
-		worldTransform3DReticle_.translation_.y += kDistanceTestObject;
-
-		worldTransform3DReticle_.translation_.z += kDistanceTestObject;
-
-
+		worldTransform3DReticle_.translation_ = Vector::Add(mouseDirection, posNear);
 		worldTransform3DReticle_.UpdateMatrix();
+
+		ImGui::Begin("3dRet");
+		ImGui::Text(
+		    "2DReticle:(%.2f,%.2f,%.2f,%.2f)",
+			spritePosition.x, spritePosition.y, mouse.x, mouse.y);
+		ImGui::Text("Near:(%+.2f,%+.2f,%+.2f", posNear.x, posNear.y, posNear.z);
+		ImGui::Text("Far:(%+.2f,%+.2f,%+.2f", posFar.x, posFar.y, posFar.z);
+		ImGui::Text(
+		    "3DReticle:(%+.2f,%+.2f,%+.2f", worldTransform3DReticle_.translation_.x,
+		    worldTransform3DReticle_.translation_.y, worldTransform3DReticle_.translation_.z);
+
+		ImGui::End();
 
 	}
 }
@@ -221,7 +249,7 @@ void Player::Draw(ViewProjection& viewProjection) {
 	// 3DModel
 	model_->Draw(worldTransform_, viewProjection, this->textureHandle_);
 	// レティクルオフセット
-	//offsetModel_->Draw(worldTransform3DReticle_, viewProjection, offsetTexture_);
+	offsetModel_->Draw(worldTransform3DReticle_, viewProjection, offsetTexture_);
 
 
 	// PositionDraw
@@ -253,8 +281,8 @@ void Player::Attack() {
 		// 弾回転
 		//velocity = MathCalc::TransformNormal(velocity, worldTransform_.matWorld_);
 
-		velocity = worldTransform3DReticle_.translation_;
-		velocity = velocity - worldTransform_.translation_;
+		velocity =
+		    Vector::Subtract(worldTransform3DReticle_.translation_,this->GetWorldPosition());
 		velocity = {
 		    MathCalc::Normalize(velocity).x * kBulletSpeed,
 		    MathCalc::Normalize(velocity).y * kBulletSpeed,
@@ -268,6 +296,38 @@ void Player::Attack() {
 		// 
 		bullets_.push_back(newBullet);
 	}
+
+	XINPUT_STATE joyState;
+
+	// ゲームパッド未接続なら何もせずに抜ける
+	if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
+		return;
+	}
+	// Rトリガーを押していたら
+	if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+		// 弾速
+		const float kBulletSpeed = 1.0f;
+		Vector3 velocity(0, 0, kBulletSpeed);
+
+		// 弾回転
+		// velocity = MathCalc::TransformNormal(velocity, worldTransform_.matWorld_);
+
+		velocity = worldTransform3DReticle_.translation_;
+		velocity = velocity - worldTransform_.translation_;
+		velocity = {
+		    MathCalc::Normalize(velocity).x * kBulletSpeed,
+		    MathCalc::Normalize(velocity).y * kBulletSpeed,
+		    MathCalc::Normalize(velocity).z * kBulletSpeed};
+		Vector3 worldPos = GetWorldPosition();
+
+		// 弾生成
+		PlayerBullet* newBullet = new PlayerBullet();
+		newBullet->Initialize(model_, worldPos, velocity);
+
+		//
+		bullets_.push_back(newBullet);
+	}
+
 }
 
 void Player::OnCollision() {
