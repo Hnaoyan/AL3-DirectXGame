@@ -30,6 +30,11 @@ public:
 	// Attack
 	void Attack();
 
+	// マウスとレティクルを合わせる
+	void MouseScreen(ViewProjection& viewProjection);
+
+	void StickScreen(const Vector2& spritePosition, ViewProjection& viewProjection);
+
 	// Destract
 	~Player();
 
@@ -42,6 +47,8 @@ public:
 	const std::list<PlayerBullet*>& GetBullets() { return bullets_; }
 
 	const float radius = 15.0f;
+
+	const float kDistanceTestObject = 150.0f;
 
 	// 親となるワールドトランスフォームをセット
 	// <param name="parent">親となるワールドトランスフォーム</param>

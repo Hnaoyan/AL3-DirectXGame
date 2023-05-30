@@ -34,7 +34,7 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	uint32_t textureReticle = TextureManager::Load("reticle.png");
 
 	// スプライト生成
-	sprite2DReticle_ = Sprite::Create(textureReticle,Vector2(0,0),Vector4(1,1,1,1),Vector2(0.5f,0.5f));
+	sprite2DReticle_ = Sprite::Create(textureReticle,Vector2(WinApp::kWindowWidth / 2,WinApp::kWindowHeight / 2),Vector4(1,1,1,1),Vector2(0.5f,0.5f));
 }
 
 void Player::Rotate() {
@@ -183,67 +183,11 @@ void Player::Update(ViewProjection& viewProjection) {
 	//	sprite2DReticle_->SetPosition(Vector2(positionReticle.x, positionReticle.y));
 	//}
 
-	{
-		// ビューポート行列
-		Matrix4x4 matViewport =
-		    Matrix::MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
+	MouseScreen(viewProjection);
+	//StickScreen(spritePosition, viewProjection);
 
-		POINT mousePosition;
-		// マウス座標（スクリーン座標）を取得する
-		GetCursorPos(&mousePosition);
-
-		// クライアントエリア座標に変換する
-		HWND hwnd = WinApp::GetInstance()->GetHwnd();
-		ScreenToClient(hwnd, &mousePosition);
-		Vector2 mouse = {float(mousePosition.x), float(mousePosition.y)};
-		sprite2DReticle_->SetPosition(mouse);
-		
-
-		// ビュープロジェクションビューポート合成行列
-		Matrix4x4 matVPV = Matrix::Multiply(
-		    Matrix::Multiply(viewProjection.matView, viewProjection.matProjection), matViewport);
-		// 合成行列の逆行列を計算
-		Matrix4x4 matInverseVPV = Matrix::MakeInverse(matVPV);
-	
-		// スクリーン座標
-		//Vector3 posNear =
-		//    Vector3(sprite2DReticle_->GetPosition().x, sprite2DReticle_->GetPosition().y, 0);
-		//Vector3 posFar =
-		//    Vector3(sprite2DReticle_->GetPosition().x, sprite2DReticle_->GetPosition().y, 1);
-
-		Vector3 posNear = Vector3(mouse.x, mouse.y, 0);
-		Vector3 posFar = Vector3(mouse.x, mouse.y, 1);
-
-		// スクリーン座標系からワールド座標系へ
-		posNear = Matrix::Transform(posNear, matInverseVPV);
-		posFar = Matrix::Transform(posFar, matInverseVPV);
-
-		// マウスレイの方向
-		Vector3 mouseDirection = Vector::Subtract(posFar, posNear);
-		mouseDirection = MathCalc::Normalize(mouseDirection);
-		//カメラから照準オブジェクトの距離
-		const float kDistanceTestObject = 100.0f;
-		mouseDirection.x *= kDistanceTestObject;
-		mouseDirection.y *= kDistanceTestObject;
-		mouseDirection.z *= kDistanceTestObject;
-
-		worldTransform3DReticle_.translation_ = Vector::Add(mouseDirection, posNear);
-		worldTransform3DReticle_.UpdateMatrix();
-
-		ImGui::Begin("3dRet");
-		ImGui::Text(
-		    "2DReticle:(%.2f,%.2f,%.2f,%.2f)",
-			spritePosition.x, spritePosition.y, mouse.x, mouse.y);
-		ImGui::Text("Near:(%+.2f,%+.2f,%+.2f", posNear.x, posNear.y, posNear.z);
-		ImGui::Text("Far:(%+.2f,%+.2f,%+.2f", posFar.x, posFar.y, posFar.z);
-		ImGui::Text(
-		    "3DReticle:(%+.2f,%+.2f,%+.2f", worldTransform3DReticle_.translation_.x,
-		    worldTransform3DReticle_.translation_.y, worldTransform3DReticle_.translation_.z);
-
-		ImGui::End();
-
-	}
 }
+
 
 void Player::Draw(ViewProjection& viewProjection) {
 	// 3DModel
@@ -309,11 +253,8 @@ void Player::Attack() {
 		const float kBulletSpeed = 1.0f;
 		Vector3 velocity(0, 0, kBulletSpeed);
 
-		// 弾回転
-		// velocity = MathCalc::TransformNormal(velocity, worldTransform_.matWorld_);
-
-		velocity = worldTransform3DReticle_.translation_;
-		velocity = velocity - worldTransform_.translation_;
+		velocity =
+		    Vector::Subtract(worldTransform3DReticle_.translation_, this->GetWorldPosition());
 		velocity = {
 		    MathCalc::Normalize(velocity).x * kBulletSpeed,
 		    MathCalc::Normalize(velocity).y * kBulletSpeed,
@@ -337,4 +278,102 @@ void Player::OnCollision() {
 void Player::SetParent(const WorldTransform* parent) {
 	// 親子関係を結ぶ
 	worldTransform_.parent_ = parent;
+}
+
+void Player::MouseScreen(ViewProjection& viewProjection) {
+	{
+		// ビューポート行列
+		Matrix4x4 matViewport =
+		    Matrix::MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
+
+		POINT mousePosition;
+		// マウス座標（スクリーン座標）を取得する
+		GetCursorPos(&mousePosition);
+
+		// クライアントエリア座標に変換する
+		HWND hwnd = WinApp::GetInstance()->GetHwnd();
+		ScreenToClient(hwnd, &mousePosition);
+		Vector2 mouse = {float(mousePosition.x), float(mousePosition.y)};
+		sprite2DReticle_->SetPosition(mouse);
+
+		// ビュープロジェクションビューポート合成行列
+		Matrix4x4 matVPV = Matrix::Multiply(
+		    Matrix::Multiply(viewProjection.matView, viewProjection.matProjection), matViewport);
+		// 合成行列の逆行列を計算
+		Matrix4x4 matInverseVPV = Matrix::MakeInverse(matVPV);
+
+		// スクリーン座標
+		Vector3 posNear = Vector3(mouse.x, mouse.y, 0);
+		Vector3 posFar = Vector3(mouse.x, mouse.y, 1);
+
+		// スクリーン座標系からワールド座標系へ
+		posNear = Matrix::Transform(posNear, matInverseVPV);
+		posFar = Matrix::Transform(posFar, matInverseVPV);
+
+		// マウスレイの方向
+		Vector3 mouseDirection = Vector::Subtract(posFar, posNear);
+		mouseDirection = MathCalc::Normalize(mouseDirection);
+		// カメラから照準オブジェクトの距離
+		mouseDirection.x *= kDistanceTestObject;
+		mouseDirection.y *= kDistanceTestObject;
+		mouseDirection.z *= kDistanceTestObject;
+
+		worldTransform3DReticle_.translation_ = Vector::Add(mouseDirection, posNear);
+		worldTransform3DReticle_.UpdateMatrix();
+
+		ImGui::Begin("3dRet");
+		ImGui::Text("2DReticle:(%.2f,%.2f)", mouse.x, mouse.y);
+		ImGui::Text("Near:(%+.2f,%+.2f,%+.2f", posNear.x, posNear.y, posNear.z);
+		ImGui::Text("Far:(%+.2f,%+.2f,%+.2f", posFar.x, posFar.y, posFar.z);
+		ImGui::Text(
+		    "3DReticle:(%+.2f,%+.2f,%+.2f", worldTransform3DReticle_.translation_.x,
+		    worldTransform3DReticle_.translation_.y, worldTransform3DReticle_.translation_.z);
+
+		ImGui::End();
+	}
+}
+
+void Player::StickScreen(const Vector2& spritePosition, ViewProjection& viewProjection) {
+	{
+		// ビューポート行列
+		Matrix4x4 matViewport =
+		    Matrix::MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
+
+		sprite2DReticle_->SetPosition(spritePosition);
+
+		// ビュープロジェクションビューポート合成行列
+		Matrix4x4 matVPV = Matrix::Multiply(
+		    Matrix::Multiply(viewProjection.matView, viewProjection.matProjection), matViewport);
+		// 合成行列の逆行列を計算
+		Matrix4x4 matInverseVPV = Matrix::MakeInverse(matVPV);
+
+		// スクリーン座標
+		Vector3 posNear = Vector3(spritePosition.x, spritePosition.y, 0);
+		Vector3 posFar = Vector3(spritePosition.x, spritePosition.y, 1);
+
+		// スクリーン座標系からワールド座標系へ
+		posNear = Matrix::Transform(posNear, matInverseVPV);
+		posFar = Matrix::Transform(posFar, matInverseVPV);
+
+		// マウスレイの方向
+		Vector3 mouseDirection = Vector::Subtract(posFar, posNear);
+		mouseDirection = MathCalc::Normalize(mouseDirection);
+		// カメラから照準オブジェクトの距離
+		mouseDirection.x *= kDistanceTestObject;
+		mouseDirection.y *= kDistanceTestObject;
+		mouseDirection.z *= kDistanceTestObject;
+
+		worldTransform3DReticle_.translation_ = Vector::Add(mouseDirection, posNear);
+		worldTransform3DReticle_.UpdateMatrix();
+
+		ImGui::Begin("3dRet");
+		ImGui::Text("2DReticle:(%.2f,%.2f)", spritePosition.x, spritePosition.y);
+		ImGui::Text("Near:(%+.2f,%+.2f,%+.2f", posNear.x, posNear.y, posNear.z);
+		ImGui::Text("Far:(%+.2f,%+.2f,%+.2f", posFar.x, posFar.y, posFar.z);
+		ImGui::Text(
+		    "3DReticle:(%+.2f,%+.2f,%+.2f", worldTransform3DReticle_.translation_.x,
+		    worldTransform3DReticle_.translation_.y, worldTransform3DReticle_.translation_.z);
+
+		ImGui::End();
+	}
 }
