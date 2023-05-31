@@ -8,6 +8,9 @@ void RailCamera::Initialize(const Vector3& position,const Vector3& rotate) {
 	worldTransform_.rotation_ = rotate;
 	worldTransform_.scale_ = {1.0f, 1.0f, 1.0f};
 
+	// SingleInstance
+	this->input_ = Input::GetInstance();
+
 	// ビュープロジェクションの初期化
 	// farZの値変更
 
@@ -17,8 +20,41 @@ void RailCamera::Initialize(const Vector3& position,const Vector3& rotate) {
 
 void RailCamera::Update() { 
 
+	std::vector<Vector3> controlPoints_;
+	controlPoints_ = {
+	    {0,  0,  0},
+        {10, 10, 0},
+        {10, 15, 0},
+        {10, 15, 0},
+        {20, 0,  0},
+        {30, 0,  0},
+	};
+
 	//worldTransform_.translation_.z = worldTransform_.translation_.z - 0.1f;
 	//worldTransform_.rotation_.y = worldTransform_.rotation_.y + 0.01f;
+
+	if (input_->PushKey(DIK_Q)) {
+		worldTransform_.rotation_.y -= 0.005f;
+	} else if (input_->PushKey(DIK_E)) {
+		worldTransform_.rotation_.y += 0.005f;
+	}
+
+	XINPUT_STATE joyState;
+	
+	// ゲームパッド未接続なら何もせずに抜ける
+	if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
+		return;
+	}
+
+	
+
+	if (joyState.Gamepad.bLeftTrigger) {
+		worldTransform_.rotation_.y -= 0.005f;
+	}
+	if (joyState.Gamepad.bRightTrigger) {
+		worldTransform_.rotation_.y += 0.005f;
+	}
+	
 
 	// カメラ座標を表示
 	ImGui::Begin("Camera");

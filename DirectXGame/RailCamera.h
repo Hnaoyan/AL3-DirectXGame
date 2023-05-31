@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "WorldTransform.h"
 #include "ViewProjection.h"
+#include "Input.h"
 
 /// <summary>
 ///  レールカメラ
@@ -25,4 +26,5 @@ private:
 	// ビュープロジェクション
 	ViewProjection viewProjection_;
 
+	Input* input_ = nullptr;
 };
