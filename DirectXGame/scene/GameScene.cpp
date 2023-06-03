@@ -215,44 +215,45 @@ void GameScene::CheckAllCollision() {
 	// リスト内のペアを総当たり
 	std::list<Collider*>::iterator itrA = colliders_.begin();
 	for (; itrA != colliders_.end(); ++itrA) {
-		//itrA = colliders_
+		Collider* colliderA = *itrA;
 
 		// イテレータBはイテレータAの次の要素から回す（重複判定を回避）
 		std::list<Collider*>::iterator itrB = itrA;
 		itrB++;
 
 		for (; itrB != colliders_.end(); ++itrB) {
-		
+			Collider* colliderB = *itrB;
 
+			CheckCollisionPair(colliderA, colliderB);
 		}
 
 	}
 
-#pragma region 自キャラと敵弾の当たり判定
-	// 自キャラと敵弾全ての当たり判定
-	for (EnemyBullet* bullet : enemyBullets_) {
-		CheckCollisionPair(bullet, player_);
-	}
-
-#pragma endregion
-
-#pragma region 自弾と敵キャラの当たり判定
-	for (Enemy* enemy : enemys_) {
-		// 敵キャラと自弾全ての当たり判定
-		for (PlayerBullet* bullet : playerBullets) {
-			CheckCollisionPair(enemy, bullet);
-		}
-	}
-#pragma endregion
-
-#pragma region 自弾と敵弾の当たり判定
-	// 自弾の座標
-	for (PlayerBullet* playerBullet_ : playerBullets) {
-		// 総当たり
-		for (EnemyBullet* enemyBullet_ : enemyBullets_) {
-			CheckCollisionPair(playerBullet_, enemyBullet_);
-		}
-	}
+//#pragma region 自キャラと敵弾の当たり判定
+//	// 自キャラと敵弾全ての当たり判定
+//	for (EnemyBullet* bullet : enemyBullets_) {
+//		CheckCollisionPair(bullet, player_);
+//	}
+//
+//#pragma endregion
+//
+//#pragma region 自弾と敵キャラの当たり判定
+//	for (Enemy* enemy : enemys_) {
+//		// 敵キャラと自弾全ての当たり判定
+//		for (PlayerBullet* bullet : playerBullets) {
+//			CheckCollisionPair(enemy, bullet);
+//		}
+//	}
+//#pragma endregion
+//
+//#pragma region 自弾と敵弾の当たり判定
+//	// 自弾の座標
+//	for (PlayerBullet* playerBullet_ : playerBullets) {
+//		// 総当たり
+//		for (EnemyBullet* enemyBullet_ : enemyBullets_) {
+//			CheckCollisionPair(playerBullet_, enemyBullet_);
+//		}
+//	}
 
 
 #pragma endregion
@@ -270,6 +271,12 @@ void GameScene::CheckCollisionPair(Collider* colliderA, Collider* colliderB) {
 	float distance = {
 	    powf(pointA.x - pointB.x, 2) + powf(pointA.y - pointB.y, 2) + powf(pointA.z - pointB.z, 2)};
 	float radius = colliderA->GetterRad() + colliderB->GetterRad();
+	//// 衝突フィルタリング
+	//if ((colliderA->GetCollisionAttribute() != colliderB->GetCollisionMask()) ||
+	//	(colliderB->GetCollisionAttribute() != colliderA->GetCollisionMask())) {
+	//	return;
+	//}
+
 	// 交差判定
 	if (distance <= radius) {
 		// ColliderAの衝突時のコールバック

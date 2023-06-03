@@ -1,6 +1,7 @@
 ﻿#include "PlayerBullet.h"
 #include <assert.h>
-#include"MathCalc.h"
+#include "MathCalc.h"
+#include "CollisionConfig.h"
 
 void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vector3& velocity) {
 	// NULLPointerCheck
@@ -16,6 +17,10 @@ void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vecto
 
 	// 
 	this->velocity_ = velocity;
+	//// 衝突属性を設定
+	//SetCollisionAttribute(kCollisionAttributePlayer);
+	//// 衝突対象を自分の属性以外に設定
+	//SetCollisionMask(kCollisionAttributeEnemy);
 }
 
 void PlayerBullet::Update() { 
@@ -48,3 +53,10 @@ Vector3 PlayerBullet::GetWorldPosition() {
 
 	return worldPos;
 }
+//// 衝突属性（自分）
+//uint32_t PlayerBullet::GetCollisionAttribute() { return collisionAttribute_; }
+//void PlayerBullet::SetCollisionAttribute(uint32_t attribute) { collisionAttribute_ = attribute; }
+//
+//// 衝突マスク（相手）
+//uint32_t PlayerBullet::GetCollisionMask() { return collisionMask_; }
+//void PlayerBullet::SetCollisionMask(uint32_t mask) { collisionMask_ = mask; }

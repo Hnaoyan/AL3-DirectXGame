@@ -2,6 +2,7 @@
 #include<cassert>
 #include "ImGuiManager.h"
 #include "MathCalc.h"
+#include "CollisionConfig.h"
 
 Player::~Player() { 
 	for (PlayerBullet* bullet : bullets_) {
@@ -32,6 +33,11 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 
 	// スプライト生成
 	sprite2DReticle_ = Sprite::Create(textureReticle,Vector2(0,0),Vector4(1,1,1,1),Vector2(0.5f,0.5f));
+
+	//// 衝突属性を設定
+	//SetCollisionAttribute(kCollisionAttributePlayer);
+	//// 衝突対象を自分の属性以外に設定
+	//SetCollisionMask(kCollisionAttributeEnemy);
 }
 
 void Player::Rotate() {
@@ -224,3 +230,11 @@ void Player::SetParent(const WorldTransform* parent) {
 	// 親子関係を結ぶ
 	worldTransform_.parent_ = parent;
 }
+
+//// 衝突属性（自分）
+//uint32_t Player::GetCollisionAttribute() { return collisionAttribute_; }
+//void Player::SetCollisionAttribute(uint32_t attribute) { collisionAttribute_ = attribute; }
+//
+//// 衝突マスク（相手）
+//uint32_t Player::GetCollisionMask() { return collisionMask_; }
+//void Player::SetCollisionMask(uint32_t mask) { collisionMask_ = mask; }

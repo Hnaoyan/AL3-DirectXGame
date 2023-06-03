@@ -4,6 +4,7 @@
 #include "TextureManager.h"
 #include "Player.h"
 #include "GameScene.h"
+#include "CollisionConfig.h"
 
 Enemy::~Enemy() { 
 	//for (EnemyBullet* bullet : enemyBullets_) {
@@ -27,7 +28,10 @@ void Enemy::Initialize(Model* model,GameScene* gameScene, Vector3 position) {
 	SetGameScene(gameScene);
 
 	ApproachInitialize();
-
+	//// 衝突属性を設定
+	//SetCollisionAttribute(kCollisionAttributeEnemy);
+	//// 衝突対象を自分の属性以外に設定
+	//SetCollisionMask(kCollisionAttributePlayer);
 }
 
 void Enemy::Update() {
@@ -109,3 +113,11 @@ void Enemy::ApproachInitialize() {
 void Enemy::OnCollision() { 
 	isDead_ = true;
 }
+
+//// 衝突属性（自分）
+//uint32_t Enemy::GetCollisionAttribute() { return collisionAttribute_; }
+//void Enemy::SetCollisionAttribute(uint32_t attribute) { collisionAttribute_ = attribute; }
+//
+//// 衝突マスク（相手）
+//uint32_t Enemy::GetCollisionMask() { return collisionMask_; }
+//void Enemy::SetCollisionMask(uint32_t mask) { collisionMask_ = mask; }
