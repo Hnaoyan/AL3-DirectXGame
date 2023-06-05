@@ -39,23 +39,6 @@ void RailCamera::Update() {
 		worldTransform_.rotation_.y += 0.005f;
 	}
 
-	XINPUT_STATE joyState;
-	
-	// ゲームパッド未接続なら何もせずに抜ける
-	if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
-		return;
-	}
-
-	
-
-	if (joyState.Gamepad.bLeftTrigger) {
-		worldTransform_.rotation_.y -= 0.005f;
-	}
-	if (joyState.Gamepad.bRightTrigger) {
-		worldTransform_.rotation_.y += 0.005f;
-	}
-	
-
 	// カメラ座標を表示
 	ImGui::Begin("Camera");
 	float inputFloatPos[3] = {
@@ -82,4 +65,20 @@ void RailCamera::Update() {
 	viewProjection_.matView = Matrix::MakeInverse(worldTransform_.matWorld_);
 	// ビュープロジェクションを転送
 	viewProjection_.TransferMatrix();
+
+
+	XINPUT_STATE joyState;
+	
+	// ゲームパッド未接続なら何もせずに抜ける
+	if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
+		return;
+	}
+	
+	if (joyState.Gamepad.bLeftTrigger) {
+		worldTransform_.rotation_.y -= 0.005f;
+	}
+	if (joyState.Gamepad.bRightTrigger) {
+		worldTransform_.rotation_.y += 0.005f;
+	}
+	
 }
