@@ -73,19 +73,4 @@ private:
 	// bullet
 	std::list<PlayerBullet*> bullets_;
 	//PlayerBullet* bullet_ = nullptr;
-//private:
-//	// 衝突属性（自分）
-//	uint32_t collisionAttribute_ = 0xffffffff;
-//	// 衝突マスク（相手）
-//	uint32_t collisionMask_ = 0xffffffff;
-//
-//public:
-//	// 衝突属性（自分）を取得
-//	uint32_t GetCollisionAttribute() override;
-//	// 衝突属性（自分）を設定
-//	void SetCollisionAttribute(uint32_t attribute) override;
-//	// 衝突マスク（相手）を取得
-//	uint32_t GetCollisionMask() override;
-//	// 衝突マスク（相手）を設定
-//	void SetCollisionMask(uint32_t mask) override;
 };

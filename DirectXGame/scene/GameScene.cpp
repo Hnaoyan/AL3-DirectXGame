@@ -271,11 +271,11 @@ void GameScene::CheckCollisionPair(Collider* colliderA, Collider* colliderB) {
 	float distance = {
 	    powf(pointA.x - pointB.x, 2) + powf(pointA.y - pointB.y, 2) + powf(pointA.z - pointB.z, 2)};
 	float radius = colliderA->GetterRad() + colliderB->GetterRad();
-	//// 衝突フィルタリング
-	//if ((colliderA->GetCollisionAttribute() != colliderB->GetCollisionMask()) ||
-	//	(colliderB->GetCollisionAttribute() != colliderA->GetCollisionMask())) {
-	//	return;
-	//}
+	// 衝突フィルタリング
+	if ((colliderA->GetCollisionAttribute() != colliderB->GetCollisionMask()) ||
+		(colliderB->GetCollisionAttribute() != colliderA->GetCollisionMask())) {
+		return;
+	}
 
 	// 交差判定
 	if (distance <= radius) {
