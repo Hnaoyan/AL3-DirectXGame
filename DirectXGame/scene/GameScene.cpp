@@ -20,7 +20,7 @@ GameScene::~GameScene() {
 	delete debugCamera_;
 	delete railCamera_;
 	// 天球モデル
-	delete skydome_;
+	//delete skydome_;
 	delete modelSkydome_;
 }
 
@@ -47,8 +47,8 @@ void GameScene::Initialize() {
 	// 3Dモデルの生成
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 	// 天球
-	skydome_ = new Skydome();
-	skydome_->Initialize(modelSkydome_);
+	//skydome_ = new Skydome();
+	//skydome_->Initialize(modelSkydome_);
 
 	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
@@ -129,7 +129,7 @@ void GameScene::Update() {
 
 	
 	// 天球
-	skydome_->Update();
+	//skydome_->Update();
 
 	this->CheckAllCollision();
 }
@@ -163,7 +163,7 @@ void GameScene::Draw() {
 	/// </summary>
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
-	skydome_->Draw(viewProjection_);
+	//skydome_->Draw(viewProjection_);
 
 	for (Enemy* enemy : enemys_) {
 		enemy->Draw(viewProjection_);

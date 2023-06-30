@@ -70,7 +70,7 @@ private: // メンバ変数
 	// 自キャラ
 	Player* player_ = nullptr;
 	// 天球
-	Skydome* skydome_ = nullptr;
+	//Skydome* skydome_ = nullptr;
 	Model* modelSkydome_ = nullptr;
 	// デバッグカメラ
 	DebugCamera* debugCamera_ = nullptr;
