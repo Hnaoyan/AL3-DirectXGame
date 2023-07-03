@@ -29,8 +29,8 @@ void GameScene::Initialize() {
 	skydomeModel_.reset(Model::CreateFromOBJ("skydome", true));
 
 	// 天球
-	//skydome_ = std::make_unique<Skydome>();
-	//skydome_->Initialize(modelSkydome_);
+	skydome_ = std::make_unique<Skydome>();
+	skydome_->Initialize(skydomeModel_.get());
 
 	// デバッグカメラの生成
 	debugCamera_.reset(new DebugCamera(1280, 720));
@@ -66,7 +66,7 @@ void GameScene::Update() {
 	player_->Update();
 
 	// 天球
-	//skydome_->Update();
+	skydome_->Update();
 
 }
 
@@ -99,7 +99,8 @@ void GameScene::Draw() {
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
 	
-	//skydome_->Draw(viewProjection_);
+	// スカイドームの描画
+	skydome_->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
