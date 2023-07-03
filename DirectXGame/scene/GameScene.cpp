@@ -13,7 +13,6 @@ GameScene::~GameScene() {
 	delete player_;
 	// デバッグカメラの解放
 	delete debugCamera_;
-	delete railCamera_;
 	// 天球モデル
 	//delete skydome_;
 	delete modelSkydome_;
@@ -32,11 +31,10 @@ void GameScene::Initialize() {
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 	
-	// レールカメラ
-	railCamera_ = new RailCamera();
-	railCamera_->Initialize(Vector3{0, 0, -100.0f}, Vector3{0, 0, 0});
 	// 自キャラ
 	player_ = new Player();
+	player_->Initialize(model_, textureHandle_);
+
 	// 3Dモデルの生成
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 
@@ -57,7 +55,13 @@ void GameScene::Update() {
 
 	#ifdef _DEBUG
 	if (input_->TriggerKey(DIK_L)) {
-		isDebugCameraActive_ = true;
+		if (isDebugCameraActive_) {
+			isDebugCameraActive_ = false;
+		} 
+		else 
+		{
+			isDebugCameraActive_ = true;
+		}
 	}
 #endif // _DEBUG
 	// カメラの処理
@@ -67,15 +71,10 @@ void GameScene::Update() {
 		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
 		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
 		viewProjection_.TransferMatrix();
-
-	} else {
-		// ビュープロジェクション行列の更新と転送
-		railCamera_->Update();
-		viewProjection_.matView = railCamera_->GetViewCamera().matView;
-		viewProjection_.matProjection = railCamera_->GetViewCamera().matProjection;
-		viewProjection_.TransferMatrix();
 	}
 	
+	player_->Update();
+
 	// 天球
 	//skydome_->Update();
 
@@ -108,7 +107,7 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 	// 自キャラの描画
-	
+	player_->Draw(viewProjection_);
 	
 	//skydome_->Draw(viewProjection_);
 

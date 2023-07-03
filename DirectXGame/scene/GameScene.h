@@ -11,7 +11,6 @@
 #include "Player.h"
 #include "Skydome.h"
 #include "DebugCamera.h"
-#include "RailCamera.h"
 
 /// <summary>
 /// ゲームシーン
@@ -59,13 +58,12 @@ private: // メンバ変数
 	Player* player_ = nullptr;
 	// 天球
 	Skydome* skydome_ = nullptr;
+
 	Model* modelSkydome_ = nullptr;
 	// デバッグカメラ
 	DebugCamera* debugCamera_ = nullptr;
 	// デバッグカメラ有効
 	bool isDebugCameraActive_ = false;
-	// レールカメラ
-	RailCamera* railCamera_ = nullptr;
 
 	/// <summary>
 	/// ゲームシーン用
