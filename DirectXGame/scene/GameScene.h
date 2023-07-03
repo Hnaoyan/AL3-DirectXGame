@@ -9,7 +9,6 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "Player.h"
-#include "Enemy.h"
 #include "Skydome.h"
 #include "DebugCamera.h"
 #include "RailCamera.h"
@@ -45,17 +44,6 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
-	/// <summary>
-	/// 衝突判定と応答
-	/// </summary>
-	void CheckAllCollision();
-
-	/// <summary>
-	/// 敵弾を追加する
-	/// </summary>
-	/// <param name="enemyBullet">敵弾</param>
-	void AddEnemyBullet(EnemyBullet* enemyBullet);
-
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -70,7 +58,7 @@ private: // メンバ変数
 	// 自キャラ
 	Player* player_ = nullptr;
 	// 天球
-	//Skydome* skydome_ = nullptr;
+	Skydome* skydome_ = nullptr;
 	Model* modelSkydome_ = nullptr;
 	// デバッグカメラ
 	DebugCamera* debugCamera_ = nullptr;
@@ -78,17 +66,6 @@ private: // メンバ変数
 	bool isDebugCameraActive_ = false;
 	// レールカメラ
 	RailCamera* railCamera_ = nullptr;
-
-	// 敵キャラ
-	Enemy* enemy_ = nullptr;
-	std::list<Enemy*> enemys_;
-
-	// 敵弾
-	std::list<EnemyBullet*> enemyBullets_;
-
-	int32_t count = 0;
-
-	int32_t deathTimer = 0;
 
 	/// <summary>
 	/// ゲームシーン用
