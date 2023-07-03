@@ -11,6 +11,7 @@
 #include "Player.h"
 #include "Skydome.h"
 #include "DebugCamera.h"
+#include <memory>
 
 /// <summary>
 /// ゲームシーン
@@ -50,20 +51,25 @@ private: // メンバ変数
 
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0;
-	// 3Dモデルデータ
-	Model* model_ = nullptr;
 	// ビュープロジェクション
 	ViewProjection viewProjection_;
-	// 自キャラ
-	Player* player_ = nullptr;
-	// 天球
-	Skydome* skydome_ = nullptr;
 
-	Model* modelSkydome_ = nullptr;
-	// デバッグカメラ
-	DebugCamera* debugCamera_ = nullptr;
 	// デバッグカメラ有効
 	bool isDebugCameraActive_ = false;
+
+private: // ポインタ
+	// 3Dモデルデータ
+	std::unique_ptr<Model> model_; 
+	// 天球モデル
+	std::unique_ptr<Model> skydomeModel_;
+
+	// 自キャラ
+	std::unique_ptr<Player> player_;
+	// 天球
+	std::unique_ptr<Skydome> skydome_;
+
+	// デバッグカメラ
+	std::unique_ptr<DebugCamera> debugCamera_;
 
 	/// <summary>
 	/// ゲームシーン用

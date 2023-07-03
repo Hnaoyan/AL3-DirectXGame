@@ -5,18 +5,7 @@
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() {
-	// 3Dモデルデータの解放
-	delete model_;
-
-	// 自キャラの解放
-	delete player_;
-	// デバッグカメラの解放
-	delete debugCamera_;
-	// 天球モデル
-	//delete skydome_;
-	delete modelSkydome_;
-}
+GameScene::~GameScene() {}
 
 void GameScene::Initialize() {
 
@@ -26,24 +15,25 @@ void GameScene::Initialize() {
 
 	textureHandle_ = TextureManager::Load("sample.png");
 	// モデルデータの生成
-	model_ = Model::Create();
+	model_.reset(Model::Create());
 	
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 	
 	// 自キャラ
-	player_ = new Player();
-	player_->Initialize(model_, textureHandle_);
+	player_ = std::make_unique<Player>();
+
+	player_->Initialize(model_.get(), textureHandle_);
 
 	// 3Dモデルの生成
-	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
+	skydomeModel_.reset(Model::CreateFromOBJ("skydome", true));
 
 	// 天球
-	//skydome_ = new Skydome();
+	//skydome_ = std::make_unique<Skydome>();
 	//skydome_->Initialize(modelSkydome_);
 
 	// デバッグカメラの生成
-	debugCamera_ = new DebugCamera(1280, 720);
+	debugCamera_.reset(new DebugCamera(1280, 720));
 
 	// 軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
