@@ -10,6 +10,7 @@
 #include "WorldTransform.h"
 #include "Player.h"
 #include "Skydome.h"
+#include "Ground.h"
 #include "DebugCamera.h"
 #include <memory>
 
@@ -62,11 +63,16 @@ private: // ポインタ
 	std::unique_ptr<Model> model_; 
 	// 天球モデル
 	std::unique_ptr<Model> skydomeModel_;
+	// 地面モデル
+	std::unique_ptr<Model> groundModel_;
 
 	// 自キャラ
 	std::unique_ptr<Player> player_;
 	// 天球
 	std::unique_ptr<Skydome> skydome_;
+
+	// 地面
+	std::unique_ptr<Ground> ground_;
 
 	// デバッグカメラ
 	std::unique_ptr<DebugCamera> debugCamera_;

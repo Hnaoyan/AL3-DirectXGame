@@ -27,13 +27,20 @@ void GameScene::Initialize() {
 
 	// 3Dモデルの生成
 	skydomeModel_.reset(Model::CreateFromOBJ("skydome", true));
+	groundModel_.reset(Model::CreateFromOBJ("ground", true));
 
 	// 天球
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize(skydomeModel_.get());
 
+	// 地面
+	ground_ = std::make_unique<Ground>();
+	ground_->Initialize(groundModel_.get());
+
 	// デバッグカメラの生成
-	debugCamera_.reset(new DebugCamera(1280, 720));
+	//debugCamera_.reset(new DebugCamera(1280, 720));
+
+	debugCamera_ = std::make_unique<DebugCamera>(1280, 720);
 
 	// 軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
@@ -67,7 +74,7 @@ void GameScene::Update() {
 
 	// 天球
 	skydome_->Update();
-
+	ground_->Update();
 }
 
 void GameScene::Draw() {
@@ -101,6 +108,8 @@ void GameScene::Draw() {
 	
 	// スカイドームの描画
 	skydome_->Draw(viewProjection_);
+	// 地面の描画
+	ground_->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
