@@ -60,7 +60,7 @@ private: // メンバ変数
 
 private: // ポインタ
 	// 3Dモデルデータ
-	std::unique_ptr<Model> model_; 
+	std::unique_ptr<Model> charModel_; 
 	// 天球モデル
 	std::unique_ptr<Model> skydomeModel_;
 	// 地面モデル

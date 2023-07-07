@@ -15,7 +15,7 @@ void GameScene::Initialize() {
 
 	textureHandle_ = TextureManager::Load("sample.png");
 	// モデルデータの生成
-	model_.reset(Model::Create());
+	charModel_.reset(Model::Create());
 	
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
@@ -23,7 +23,7 @@ void GameScene::Initialize() {
 	// 自キャラ
 	player_ = std::make_unique<Player>();
 
-	player_->Initialize(model_.get(), textureHandle_);
+	player_->Initialize(charModel_.get(), textureHandle_);
 
 	// 3Dモデルの生成
 	skydomeModel_.reset(Model::CreateFromOBJ("skydome", true));
