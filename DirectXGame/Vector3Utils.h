@@ -6,3 +6,5 @@
 //};
 //
 Vector3 Scaler(const Vector3& v1, const float scaler);
+
+Vector3 Add(const Vector3 v1, const Vector3 v2);

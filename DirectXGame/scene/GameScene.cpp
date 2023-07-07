@@ -43,7 +43,9 @@ void GameScene::Initialize() {
 	debugCamera_ = std::make_unique<DebugCamera>(1280, 720);
 
 	followCamera_ = std::make_unique<FollowCamera>();
+	// 追従カメラの生成
 	followCamera_->Initialize();
+	followCamera_->SetTarget(&player_->GetWorldTransform());
 
 	// 軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
@@ -52,6 +54,17 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+
+	// プレイヤー
+	player_->Update();
+
+	// 地形
+	skydome_->Update();
+	ground_->Update();
+
+	// カメラ
+	followCamera_->Update();
+
 
 	#ifdef _DEBUG
 	if (input_->TriggerKey(DIK_L)) {
@@ -71,13 +84,12 @@ void GameScene::Update() {
 		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
 		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
 		viewProjection_.TransferMatrix();
+	} else {
+		viewProjection_.matView = followCamera_->GetView().matView;
+		viewProjection_.matProjection = followCamera_->GetView().matProjection;
+		viewProjection_.TransferMatrix();
 	}
 	
-	player_->Update();
-
-	// 天球
-	skydome_->Update();
-	ground_->Update();
 }
 
 void GameScene::Draw() {

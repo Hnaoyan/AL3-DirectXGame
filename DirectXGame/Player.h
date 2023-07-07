@@ -31,6 +31,12 @@ public:
 	/// <param name="viewProjection"></param>
 	void Draw(ViewProjection& viewProjection);	
 
+	/// <summary>
+	/// Getter
+	/// </summary>
+	/// <returns></returns>
+	WorldTransform GetWorldTransform() { return worldTransform_; }
+
 private:
 
 	// ワールド変換データ
