@@ -19,8 +19,27 @@ void Player::Initialize(Model* model, uint32_t textureHandle)
 
 void Player::Update() 
 {
-	// 行列を定数バッファに転送
+
+	XINPUT_STATE joyState;
+	
+	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+		// 速さ
+		const float speed = 0.3f;
+
+		// 移動量
+		Vector3 move = {(float)joyState.Gamepad.sThumbLX, 0.0f, (float)joyState.Gamepad.sThumbLY};
+
+		// 移動量に速さを反映
+		move = Scaler(MathCalc::Normalize(move), speed);
+
+		worldTransform_.translation_ += move;
+
+	}
+
+		// 行列を定数バッファに転送
 	worldTransform_.TransferMatrix();
+
+
 }
 
 void Player::Draw(ViewProjection& viewProjection) 

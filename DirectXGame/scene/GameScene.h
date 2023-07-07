@@ -12,6 +12,7 @@
 #include "Skydome.h"
 #include "Ground.h"
 #include "DebugCamera.h"
+#include "FollowCamera.h"
 #include <memory>
 
 /// <summary>
@@ -65,7 +66,6 @@ private: // ポインタ
 	std::unique_ptr<Model> skydomeModel_;
 	// 地面モデル
 	std::unique_ptr<Model> groundModel_;
-
 	// 自キャラ
 	std::unique_ptr<Player> player_;
 	// 天球
@@ -76,6 +76,9 @@ private: // ポインタ
 
 	// デバッグカメラ
 	std::unique_ptr<DebugCamera> debugCamera_;
+
+	// 追従カメラ
+	std::unique_ptr<FollowCamera> followCamera_;
 
 	/// <summary>
 	/// ゲームシーン用
