@@ -35,7 +35,7 @@ public:
 	/// Getter
 	/// </summary>
 	/// <returns></returns>
-	WorldTransform GetWorldTransform() { return worldTransform_; }
+	WorldTransform* GetWorldTransform() { return &worldTransform_; }
 
 private:
 
@@ -43,7 +43,7 @@ private:
 	WorldTransform worldTransform_;
 
 	// モデル
-	Model* model_;
+	Model* model_ = nullptr;
 
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;

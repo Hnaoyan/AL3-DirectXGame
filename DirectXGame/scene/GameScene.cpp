@@ -45,7 +45,7 @@ void GameScene::Initialize() {
 	followCamera_ = std::make_unique<FollowCamera>();
 	// 追従カメラの生成
 	followCamera_->Initialize();
-	followCamera_->SetTarget(&player_->GetWorldTransform());
+	followCamera_->SetTarget(player_->GetWorldTransform());
 
 	// 軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
