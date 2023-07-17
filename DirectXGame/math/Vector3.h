@@ -32,10 +32,9 @@ struct Vector3 final {
 	}
 
 	Vector3 operator+=(const Vector3 v1) {
-		Vector3 result{};
-		result.x += v1.x;
-		result.y += v1.y;
-		result.z += v1.z;
-		return result;
+		x += v1.x;
+		y += v1.y;
+		z += v1.z;
+		return *this;
 	}
 };

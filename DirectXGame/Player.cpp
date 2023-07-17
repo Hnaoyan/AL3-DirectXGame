@@ -27,7 +27,9 @@ void Player::Update()
 		const float speed = 0.3f;
 
 		// 移動量
-		Vector3 move = {(float)joyState.Gamepad.sThumbLX, 0.0f, (float)joyState.Gamepad.sThumbLY};
+		Vector3 move = {
+		    (float)joyState.Gamepad.sThumbLX / SHRT_MAX * speed, 0.0f,
+		    (float)joyState.Gamepad.sThumbLY / SHRT_MAX * speed};
 
 		// 移動量に速さを反映
 		move = Scaler(MathCalc::Normalize(move), speed);
@@ -36,8 +38,9 @@ void Player::Update()
 
 	}
 
-		// 行列を定数バッファに転送
-	worldTransform_.TransferMatrix();
+	// 行列を定数バッファに転送
+	worldTransform_.UpdateMatrix();
+	//worldTransform_.TransferMatrix();
 
 
 }
