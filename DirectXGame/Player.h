@@ -37,10 +37,21 @@ public:
 	/// <returns></returns>
 	WorldTransform* GetWorldTransform() { return &worldTransform_; }
 
+	/// <summary>
+	/// Viewのセッター
+	/// </summary>
+	/// <param name="viewProjection"></param>
+	void SetViewProjection(const ViewProjection* viewProjection) {
+		viewProjection_ = viewProjection;
+	}
+
 private:
 
 	// ワールド変換データ
 	WorldTransform worldTransform_;
+
+	// カメラのビュープロジェクション
+	const ViewProjection* viewProjection_ = nullptr;
 
 	// モデル
 	Model* model_ = nullptr;

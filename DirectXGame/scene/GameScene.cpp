@@ -47,6 +47,8 @@ void GameScene::Initialize() {
 	followCamera_->Initialize();
 	followCamera_->SetTarget(player_->GetWorldTransform());
 
+	player_->SetViewProjection(followCamera_->GetViewPlayer());
+
 	// 軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
 	// 軸方向表示が参照するビュープロジェクションを指定する（アドレス渡し）

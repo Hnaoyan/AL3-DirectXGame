@@ -1,5 +1,6 @@
 ﻿#include "FollowCamera.h"
 #include "Vector3Utils.h"
+#include "Matrix.h"
 #include <Input.h>
 
 void FollowCamera::Initialize() {
@@ -13,6 +14,13 @@ void FollowCamera::Update()
 	if (target_) {
 		// カメラまでのオフセット
 		Vector3 offset = {0.0f, 2.0f, -10.0f};
+
+		Matrix4x4 rotateMatrix = Matrix::Multiply(
+		    Matrix::MakeRotateXMatrix(viewProjection_.rotation_.x),
+		    Matrix::Multiply(
+		        Matrix::MakeRotateYMatrix(viewProjection_.rotation_.y),
+		        Matrix::MakeRotateZMatrix(viewProjection_.rotation_.z)));
+		offset = Matrix::Transform(offset, rotateMatrix);
 
 		// 座標をコピーしてオフセット文ずらす
 		viewProjection_.translation_ = Add(target_->translation_, offset);

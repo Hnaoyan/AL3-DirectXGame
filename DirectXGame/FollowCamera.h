@@ -22,6 +22,8 @@ public:
 
 	ViewProjection GetView() { return viewProjection_; }
 
+	ViewProjection* GetViewPlayer() { return &viewProjection_; }
+
 private:
 	// 追従対象
 	const WorldTransform* target_ = nullptr;

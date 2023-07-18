@@ -35,6 +35,9 @@ void Player::Update()
 		move = Scaler(MathCalc::Normalize(move), speed);
 
 		worldTransform_.translation_ += move;
+		worldTransform_.rotation_.y = std::atan2f(move.x, move.z);
+		float length = sqrtf(move.x * move.x + move.z * move.z);
+		worldTransform_.rotation_.x = std::atan2f(-move.y, length);
 
 	}
 
