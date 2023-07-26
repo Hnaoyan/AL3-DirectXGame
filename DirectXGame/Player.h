@@ -57,9 +57,7 @@ private:
 	// カメラのビュープロジェクション
 	const ViewProjection* viewProjection_ = nullptr;
 
-	// モデル
-	Model* model_ = nullptr;
-
+	// パーツごとのモデル
 	Model* modelHead_ = nullptr;
 	Model* modelBody_ = nullptr;
 	Model* modelL_arm_ = nullptr;

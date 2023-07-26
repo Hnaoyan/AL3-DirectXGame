@@ -30,7 +30,7 @@ void GameScene::Initialize() {
 	modelL_arm_.reset(Model::CreateFromOBJ("C_Left", true));
 	modelR_arm_.reset(Model::CreateFromOBJ("C_Right", true));
 
-	player_->Initialize(modelHead_.get(), playerModel_.get(), modelL_arm_.get(), modelR_arm_.get());
+	player_->Initialize(modelHead_.get(), modelBody_.get(), modelL_arm_.get(), modelR_arm_.get());
 
 
 

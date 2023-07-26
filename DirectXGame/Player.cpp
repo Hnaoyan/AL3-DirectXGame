@@ -12,17 +12,24 @@ void Player::Initialize(Model* modelHead, Model* modelBody, Model* modelL_arm, M
 	assert(modelL_arm);
 	assert(modelR_arm);
 
+	// モデル読み込み
 	modelBody_ = modelBody;
 	modelHead_ = modelHead;
 	modelL_arm_ = modelL_arm;
 	modelR_arm_ = modelR_arm;
 
+	// 初期化
 	worldTransformBase_.Initialize();
 	worldTransformBody_.Initialize();
 	worldTransformHead_.Initialize();
 	worldTransformL_arm_.Initialize();
 	worldTransformR_arm_.Initialize();
+	
+	// 親子関係　座標移動
 	worldTransformHead_.translation_ = {0, 1.8f, 0};
+	worldTransformL_arm_.translation_ = {0.4f, 1.5f, 0};
+	worldTransformR_arm_.translation_ = {-0.4f, 1.5f, 0};
+
 }
 
 void Player::Update() 
@@ -50,18 +57,31 @@ void Player::Update()
 	}
 
 	// 親子関係作成
+	// 体
+	worldTransformBody_ = worldTransformBase_;
+	// 頭
 	worldTransformHead_.matWorld_ =
-	    Matrix::Multiply(worldTransformBase_.matWorld_, worldTransformHead_.matWorld_);
+	    Matrix::Multiply(worldTransformBody_.matWorld_, worldTransformHead_.matWorld_);
+	// 左
+	worldTransformL_arm_.matWorld_ =
+	    Matrix::Multiply(worldTransformBody_.matWorld_, worldTransformL_arm_.matWorld_);
+	// 右
+	worldTransformR_arm_.matWorld_ =
+	    Matrix::Multiply(worldTransformBody_.matWorld_, worldTransformR_arm_.matWorld_);
 
 	// 転送
-	worldTransformBase_.UpdateMatrix();
+	worldTransformBody_.UpdateMatrix();
 	worldTransformHead_.UpdateMatrix();
+	worldTransformL_arm_.UpdateMatrix();
+	worldTransformR_arm_.UpdateMatrix();
 
 }
 
 void Player::Draw(ViewProjection& viewProjection) 
 {
 	// 3Dモデルを描画
-	modelBody_->Draw(worldTransformBase_, viewProjection);
-	//modelHead_->Draw(worldTransformHead_, viewProjection);
+	modelBody_->Draw(worldTransformBody_, viewProjection);
+	modelHead_->Draw(worldTransformHead_, viewProjection);
+	modelL_arm_->Draw(worldTransformL_arm_, viewProjection);
+	modelR_arm_->Draw(worldTransformR_arm_, viewProjection);
 }
