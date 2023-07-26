@@ -49,9 +49,11 @@ void Player::Update()
 
 	}
 
-	// 行列を定数バッファに転送
+	// 親子関係作成
 	worldTransformHead_.matWorld_ =
 	    Matrix::Multiply(worldTransformBase_.matWorld_, worldTransformHead_.matWorld_);
+
+	// 転送
 	worldTransformBase_.UpdateMatrix();
 	worldTransformHead_.UpdateMatrix();
 

@@ -35,7 +35,7 @@ public:
 	/// Getter
 	/// </summary>
 	/// <returns></returns>
-	WorldTransform* GetWorldTransform() { return &worldTransform_; }
+	WorldTransform* GetWorldTransform() { return &worldTransformBase_; }
 
 	/// <summary>
 	/// Viewのセッター
@@ -48,8 +48,6 @@ public:
 private:
 
 	// ワールド変換データ
-	WorldTransform worldTransform_;
-
 	WorldTransform worldTransformBase_;
 	WorldTransform worldTransformBody_;
 	WorldTransform worldTransformHead_;
