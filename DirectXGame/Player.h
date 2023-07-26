@@ -18,7 +18,7 @@ public:
 	/// </summary>
 	/// <param name="model"></param>
 	/// <param name="textureHandle"></param>
-	void Initialize(Model* model,uint32_t textureHandle);
+	void Initialize(Model* modelHead,Model* modelBody,Model* modelL_arm,Model* modelR_arm);
 
 	/// <summary>
 	/// 更新処理
@@ -50,11 +50,22 @@ private:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
 
+	WorldTransform worldTransformBase_;
+	WorldTransform worldTransformBody_;
+	WorldTransform worldTransformHead_;
+	WorldTransform worldTransformL_arm_;
+	WorldTransform worldTransformR_arm_;
+
 	// カメラのビュープロジェクション
 	const ViewProjection* viewProjection_ = nullptr;
 
 	// モデル
 	Model* model_ = nullptr;
+
+	Model* modelHead_ = nullptr;
+	Model* modelBody_ = nullptr;
+	Model* modelL_arm_ = nullptr;
+	Model* modelR_arm_ = nullptr;
 
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;

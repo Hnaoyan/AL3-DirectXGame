@@ -66,6 +66,13 @@ private: // ポインタ
 	std::unique_ptr<Model> skydomeModel_;
 	// 地面モデル
 	std::unique_ptr<Model> groundModel_;
+	// 自キャラモデル
+	std::unique_ptr<Model> playerModel_;
+	// パーツモデル
+	std::unique_ptr<Model> modelHead_;
+	std::unique_ptr<Model> modelBody_;
+	std::unique_ptr<Model> modelR_arm_;
+	std::unique_ptr<Model> modelL_arm_;
 	// 自キャラ
 	std::unique_ptr<Player> player_;
 	// 天球

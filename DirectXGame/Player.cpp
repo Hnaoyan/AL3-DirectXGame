@@ -5,16 +5,24 @@
 #include <Windows.h>
 #include "Vector.h"
 
-void Player::Initialize(Model* model, uint32_t textureHandle) 
-{
+void Player::Initialize(Model* modelHead, Model* modelBody, Model* modelL_arm, Model* modelR_arm) {
 	// NULLチェック
-	assert(model);
+	assert(modelHead);
+	assert(modelBody);
+	assert(modelL_arm);
+	assert(modelR_arm);
 
-	model_ = model;
-	textureHandle_ = textureHandle;
+	modelBody_ = modelBody;
+	modelHead_ = modelHead;
+	modelL_arm_ = modelL_arm;
+	modelR_arm_ = modelR_arm;
 
-	worldTransform_.Initialize();
-
+	worldTransformBase_.Initialize();
+	worldTransformBody_.Initialize();
+	worldTransformHead_.Initialize();
+	worldTransformL_arm_.Initialize();
+	worldTransformR_arm_.Initialize();
+	worldTransformHead_.translation_ = {0, 1.8f, 0};
 }
 
 void Player::Update() 
@@ -34,22 +42,24 @@ void Player::Update()
 		// 移動量に速さを反映
 		move = Scaler(MathCalc::Normalize(move), speed);
 
-		worldTransform_.translation_ += move;
-		worldTransform_.rotation_.y = std::atan2f(move.x, move.z);
+		worldTransformBase_.translation_ += move;
+		worldTransformBase_.rotation_.y = std::atan2f(move.x, move.z);
 		float length = sqrtf(move.x * move.x + move.z * move.z);
-		worldTransform_.rotation_.x = std::atan2f(-move.y, length);
+		worldTransformBase_.rotation_.x = std::atan2f(-move.y, length);
 
 	}
 
 	// 行列を定数バッファに転送
-	worldTransform_.UpdateMatrix();
-	//worldTransform_.TransferMatrix();
-
+	worldTransformHead_.matWorld_ =
+	    Matrix::Multiply(worldTransformBase_.matWorld_, worldTransformHead_.matWorld_);
+	worldTransformBase_.UpdateMatrix();
+	worldTransformHead_.UpdateMatrix();
 
 }
 
 void Player::Draw(ViewProjection& viewProjection) 
 {
 	// 3Dモデルを描画
-	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+	modelBody_->Draw(worldTransformBase_, viewProjection);
+	//modelHead_->Draw(worldTransformHead_, viewProjection);
 }

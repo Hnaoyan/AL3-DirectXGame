@@ -23,11 +23,21 @@ void GameScene::Initialize() {
 	// 自キャラ
 	player_ = std::make_unique<Player>();
 
-	player_->Initialize(charModel_.get(), textureHandle_);
+	playerModel_.reset(Model::CreateFromOBJ("player", true));
+
+	modelHead_.reset(Model::CreateFromOBJ("C_Head", true));
+	modelBody_.reset(Model::CreateFromOBJ("C_Body", true));
+	modelL_arm_.reset(Model::CreateFromOBJ("C_Left", true));
+	modelR_arm_.reset(Model::CreateFromOBJ("C_Right", true));
+
+	player_->Initialize(modelHead_.get(), playerModel_.get(), modelL_arm_.get(), modelR_arm_.get());
+
+
 
 	// 3Dモデルの生成
 	skydomeModel_.reset(Model::CreateFromOBJ("skydome", true));
 	groundModel_.reset(Model::CreateFromOBJ("ground", true));
+	
 
 	// 天球
 	skydome_ = std::make_unique<Skydome>();
