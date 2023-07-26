@@ -4,6 +4,8 @@
 #include "MathCalc.h"
 #include <Windows.h>
 #include "Vector.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 void Player::Initialize(Model* modelHead, Model* modelBody, Model* modelL_arm, Model* modelR_arm) {
 	// NULLチェック
@@ -26,14 +28,24 @@ void Player::Initialize(Model* modelHead, Model* modelBody, Model* modelL_arm, M
 	worldTransformR_arm_.Initialize();
 	
 	// 親子関係　座標移動
-	worldTransformHead_.translation_ = {0, 1.8f, 0};
-	worldTransformL_arm_.translation_ = {0.4f, 1.5f, 0};
-	worldTransformR_arm_.translation_ = {-0.4f, 1.5f, 0};
+	worldTransformBody_.parent_ = &worldTransformBase_;
+	worldTransformHead_.parent_ = &worldTransformBody_;
+	worldTransformL_arm_.parent_ = &worldTransformBody_;
+	worldTransformR_arm_.parent_ = &worldTransformBody_;
 
+
+	worldTransformHead_.translation_ = {0, 1.8f, 0};
+	worldTransformL_arm_.translation_ = {0.4f, 1.5f, -0.15f};
+	worldTransformR_arm_.translation_ = {-0.4f, 1.5f, -0.15f};
+
+	// 浮遊ギミック初期化
+	InitializeFloatingGimmick();
 }
 
 void Player::Update() 
 {
+	// 浮遊ギミック更新
+	UpdateFloatingGimmick();
 
 	XINPUT_STATE joyState;
 	
@@ -55,19 +67,8 @@ void Player::Update()
 		worldTransformBase_.rotation_.x = std::atan2f(-move.y, length);
 
 	}
-
-	// 親子関係作成
-	// 体
-	worldTransformBody_ = worldTransformBase_;
-	// 頭
-	worldTransformHead_.matWorld_ =
-	    Matrix::Multiply(worldTransformBody_.matWorld_, worldTransformHead_.matWorld_);
-	// 左
-	worldTransformL_arm_.matWorld_ =
-	    Matrix::Multiply(worldTransformBody_.matWorld_, worldTransformL_arm_.matWorld_);
-	// 右
-	worldTransformR_arm_.matWorld_ =
-	    Matrix::Multiply(worldTransformBody_.matWorld_, worldTransformR_arm_.matWorld_);
+	// ベースの行列計算
+	worldTransformBase_.UpdateMatrix();
 
 	// 転送
 	worldTransformBody_.UpdateMatrix();
@@ -84,4 +85,34 @@ void Player::Draw(ViewProjection& viewProjection)
 	modelHead_->Draw(worldTransformHead_, viewProjection);
 	modelL_arm_->Draw(worldTransformL_arm_, viewProjection);
 	modelR_arm_->Draw(worldTransformR_arm_, viewProjection);
+}
+
+void Player::InitializeFloatingGimmick() { 
+	floatingParameter_ = 0.0f; }
+
+void Player::UpdateFloatingGimmick() 
+{
+	// 1フレームでのパラメータ加算値
+	const float step = 2.0f * float(M_PI) / period;
+
+	// パラメータを1ステップ分加算
+	floatingParameter_ += step;
+	// 2πを超えたら0に戻す
+	floatingParameter_ = std::fmod(floatingParameter_, 2.0f * float(M_PI));
+
+	// 浮遊を座標に反映
+	worldTransformBody_.translation_.y = std::sin(floatingParameter_) * floatingWidth;
+
+	worldTransformL_arm_.rotation_.z = std::sin(floatingParameter_) * floatingWidth;
+	worldTransformR_arm_.rotation_.z = std::sin(-floatingParameter_) * floatingWidth;
+
+	ImGui::Begin("Player");
+	ImGui::SliderFloat3("Head", &worldTransformHead_.translation_.x, -10.0f, 10.0f);
+	ImGui::SliderFloat3("ArmL", &worldTransformL_arm_.translation_.x, -10.0f, 10.0f);
+	ImGui::SliderFloat3("ArmR", &worldTransformR_arm_.translation_.x, -10.0f, 10.0f);
+	ImGui::SliderInt("period", &period, 0, 120);
+	ImGui::SliderFloat("floatWid", &floatingWidth, 0.0f, 1.0f);
+
+	ImGui::End();
+
 }

@@ -45,6 +45,16 @@ public:
 		viewProjection_ = viewProjection;
 	}
 
+	/// <summary>
+	/// 浮遊ギミック初期化
+	/// </summary>
+	void InitializeFloatingGimmick();
+
+	/// <summary>
+	/// 浮遊ギミック更新
+	/// </summary>
+	void UpdateFloatingGimmick();
+
 private:
 
 	// ワールド変換データ
@@ -65,5 +75,15 @@ private:
 
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
+
+private:
+	// 浮遊ギミックの媒介変数
+	float floatingParameter_ = 0.0f;
+
+	/// 浮遊の振幅<m>
+	float floatingWidth = 0.25f;
+
+	/// 浮遊移動のサイクル<frame>
+	int period = 60;
 
 };
