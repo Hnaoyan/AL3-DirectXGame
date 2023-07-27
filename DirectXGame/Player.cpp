@@ -7,18 +7,10 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-void Player::Initialize(Model* modelHead, Model* modelBody, Model* modelL_arm, Model* modelR_arm) {
-	// NULLチェック
-	assert(modelHead);
-	assert(modelBody);
-	assert(modelL_arm);
-	assert(modelR_arm);
-
+void Player::Initialize(const std::vector<Model*>& models) {
 	// モデル読み込み
-	modelBody_ = modelBody;
-	modelHead_ = modelHead;
-	modelL_arm_ = modelL_arm;
-	modelR_arm_ = modelR_arm;
+	// 基底クラスの初期化
+	BaseCharacter::Initialize(models);
 
 	// 初期化
 	worldTransformBase_.Initialize();
@@ -44,29 +36,27 @@ void Player::Initialize(Model* modelHead, Model* modelBody, Model* modelL_arm, M
 
 void Player::Update() 
 {
+	if (behaviorRequest_) {
+		// 行動変更
+		behavior_ = behaviorRequest_.value();
+		// それぞれの初期化
+		switch (behavior_) {
+		case Player::Behavior::kRoot:
+
+			break;
+		case Player::Behavior::kAttack:
+
+			break;
+		}
+		// リクエストをリセット
+		behaviorRequest_ = std::nullopt;
+	}
+
 	// 浮遊ギミック更新
 	UpdateFloatingGimmick();
 
-	XINPUT_STATE joyState;
-	
-	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-		// 速さ
-		const float speed = 0.3f;
+	BehaviorRootUpdate();
 
-		// 移動量
-		Vector3 move = {
-		    (float)joyState.Gamepad.sThumbLX / SHRT_MAX * speed, 0.0f,
-		    (float)joyState.Gamepad.sThumbLY / SHRT_MAX * speed};
-
-		// 移動量に速さを反映
-		move = Scaler(MathCalc::Normalize(move), speed);
-
-		worldTransformBase_.translation_ += move;
-		worldTransformBase_.rotation_.y = std::atan2f(move.x, move.z);
-		float length = sqrtf(move.x * move.x + move.z * move.z);
-		worldTransformBase_.rotation_.x = std::atan2f(-move.y, length);
-
-	}
 	// ベースの行列計算
 	worldTransformBase_.UpdateMatrix();
 
@@ -80,15 +70,16 @@ void Player::Update()
 
 void Player::Draw(ViewProjection& viewProjection) 
 {
-	// 3Dモデルを描画
-	modelBody_->Draw(worldTransformBody_, viewProjection);
-	modelHead_->Draw(worldTransformHead_, viewProjection);
-	modelL_arm_->Draw(worldTransformL_arm_, viewProjection);
-	modelR_arm_->Draw(worldTransformR_arm_, viewProjection);
+	models_[BODY]->Draw(worldTransformBody_, viewProjection);
+	models_[HEAD]->Draw(worldTransformHead_, viewProjection);
+	models_[L_ARM]->Draw(worldTransformL_arm_, viewProjection);
+	models_[R_ARM]->Draw(worldTransformR_arm_, viewProjection);
 }
 
-void Player::InitializeFloatingGimmick() { 
-	floatingParameter_ = 0.0f; }
+void Player::InitializeFloatingGimmick() 
+{ 
+	floatingParameter_ = 0.0f; 
+}
 
 void Player::UpdateFloatingGimmick() 
 {
@@ -115,4 +106,27 @@ void Player::UpdateFloatingGimmick()
 
 	ImGui::End();
 
+}
+
+void Player::BehaviorRootUpdate() 
+{
+	XINPUT_STATE joyState;
+
+	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+		// 速さ
+		const float speed = 0.3f;
+
+		// 移動量
+		Vector3 move = {
+		    (float)joyState.Gamepad.sThumbLX / SHRT_MAX * speed, 0.0f,
+		    (float)joyState.Gamepad.sThumbLY / SHRT_MAX * speed};
+
+		// 移動量に速さを反映
+		move = Scaler(MathCalc::Normalize(move), speed);
+
+		worldTransformBase_.translation_ += move;
+		worldTransformBase_.rotation_.y = std::atan2f(move.x, move.z);
+		float length = sqrtf(move.x * move.x + move.z * move.z);
+		worldTransformBase_.rotation_.x = std::atan2f(-move.y, length);
+	}
 }

@@ -5,8 +5,10 @@
 #include"Matrix.h"
 #include <list>
 #include "Sprite.h"
+#include "BaseCharacter.h"
+#include <optional>
 
-class Player
+class Player : public BaseCharacter
 {
 public:
 
@@ -18,7 +20,7 @@ public:
 	/// </summary>
 	/// <param name="model"></param>
 	/// <param name="textureHandle"></param>
-	void Initialize(Model* modelHead,Model* modelBody,Model* modelL_arm,Model* modelR_arm);
+	void Initialize(const std::vector<Model*>& models) override;
 
 	/// <summary>
 	/// 更新処理
@@ -55,6 +57,16 @@ public:
 	/// </summary>
 	void UpdateFloatingGimmick();
 
+	/// <summary>
+	/// 通常行動更新
+	/// </summary>
+	void BehaviorRootUpdate();
+
+	/// <summary>
+	/// 攻撃行動更新
+	/// </summary>
+	void BehaviorAttackUpdate();
+
 private:
 
 	// ワールド変換データ
@@ -72,6 +84,8 @@ private:
 	Model* modelBody_ = nullptr;
 	Model* modelL_arm_ = nullptr;
 	Model* modelR_arm_ = nullptr;
+	Model* modelWeapon_ = nullptr;
+
 
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
@@ -85,5 +99,22 @@ private:
 
 	/// 浮遊移動のサイクル<frame>
 	int period = 60;
+
+	enum ModelPart { 
+		BODY,
+		HEAD,
+		L_ARM,
+		R_ARM
+	};
+
+	enum class Behavior {
+		kRoot,		// 通常状態
+		kAttack,	// 攻撃中
+	};
+	// 状態
+	Behavior behavior_ = Behavior::kRoot;
+
+	// 次の動きのリクエスト
+	std::optional<Behavior> behaviorRequest_ = std::nullopt;
 
 };

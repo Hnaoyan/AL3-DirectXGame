@@ -23,15 +23,25 @@ void GameScene::Initialize() {
 	// 自キャラ
 	player_ = std::make_unique<Player>();
 
-	playerModel_.reset(Model::CreateFromOBJ("player", true));
-
 	modelHead_.reset(Model::CreateFromOBJ("C_Head", true));
 	modelBody_.reset(Model::CreateFromOBJ("C_Body", true));
 	modelL_arm_.reset(Model::CreateFromOBJ("C_Left", true));
 	modelR_arm_.reset(Model::CreateFromOBJ("C_Right", true));
 
-	player_->Initialize(modelHead_.get(), modelBody_.get(), modelL_arm_.get(), modelR_arm_.get());
+	modelWeapon_.reset(Model::CreateFromOBJ("weapon",true));
 
+	// 自キャラモデル
+	std::vector<Model*> playerModels = {
+	    modelBody_.get(), modelHead_.get(), modelL_arm_.get(), modelR_arm_.get()};
+
+	player_->Initialize(playerModels);
+
+	// 敵キャラ
+	enemy_ = std::make_unique<Enemy>();
+	// 敵モデル
+	enemyModel_.reset(Model::CreateFromOBJ("enemy", true));
+
+	enemy_->Initialize(enemyModel_.get());
 
 
 	// 3Dモデルの生成
@@ -69,6 +79,8 @@ void GameScene::Update() {
 
 	// プレイヤー
 	player_->Update();
+
+	enemy_->Update();
 
 	// 地形
 	skydome_->Update();
@@ -133,6 +145,8 @@ void GameScene::Draw() {
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
 	
+	enemy_->Draw(viewProjection_);
+
 	// スカイドームの描画
 	skydome_->Draw(viewProjection_);
 	// 地面の描画

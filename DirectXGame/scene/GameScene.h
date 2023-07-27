@@ -14,6 +14,7 @@
 #include "DebugCamera.h"
 #include "FollowCamera.h"
 #include <memory>
+#include "Enemy.h"
 
 /// <summary>
 /// ゲームシーン
@@ -66,15 +67,23 @@ private: // ポインタ
 	std::unique_ptr<Model> skydomeModel_;
 	// 地面モデル
 	std::unique_ptr<Model> groundModel_;
-	// 自キャラモデル
-	std::unique_ptr<Model> playerModel_;
+	// 敵キャラモデル
+	std::unique_ptr<Model> enemyModel_;
 	// パーツモデル
 	std::unique_ptr<Model> modelHead_;
 	std::unique_ptr<Model> modelBody_;
 	std::unique_ptr<Model> modelR_arm_;
 	std::unique_ptr<Model> modelL_arm_;
+	// 武器モデル
+	std::unique_ptr<Model> modelWeapon_;
+
 	// 自キャラ
 	std::unique_ptr<Player> player_;
+	
+
+	// 敵キャラ
+	std::unique_ptr<Enemy> enemy_;
+
 	// 天球
 	std::unique_ptr<Skydome> skydome_;
 
