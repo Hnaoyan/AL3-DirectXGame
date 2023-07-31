@@ -32,7 +32,8 @@ void GameScene::Initialize() {
 
 	// 自キャラモデル
 	std::vector<Model*> playerModels = {
-	    modelBody_.get(), modelHead_.get(), modelL_arm_.get(), modelR_arm_.get()};
+	    modelBody_.get(), modelHead_.get(), modelL_arm_.get(), modelR_arm_.get(),
+	    modelWeapon_.get()};
 
 	player_->Initialize(playerModels);
 

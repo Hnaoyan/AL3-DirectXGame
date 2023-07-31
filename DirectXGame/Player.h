@@ -1,17 +1,15 @@
 ﻿#pragma once
+#include "BaseCharacter.h"
+#include "Matrix.h"
 #include "Model.h"
+#include "Sprite.h"
 #include "WorldTransform.h"
 #include <Input.h>
-#include"Matrix.h"
 #include <list>
-#include "Sprite.h"
-#include "BaseCharacter.h"
 #include <optional>
 
-class Player : public BaseCharacter
-{
+class Player : public BaseCharacter {
 public:
-
 	Player(){};
 	~Player(){};
 
@@ -31,7 +29,7 @@ public:
 	/// 描画処理
 	/// </summary>
 	/// <param name="viewProjection"></param>
-	void Draw(ViewProjection& viewProjection);	
+	void Draw(ViewProjection& viewProjection);
 
 	/// <summary>
 	/// Getter
@@ -47,6 +45,7 @@ public:
 		viewProjection_ = viewProjection;
 	}
 
+public:
 	/// <summary>
 	/// 浮遊ギミック初期化
 	/// </summary>
@@ -67,25 +66,27 @@ public:
 	/// </summary>
 	void BehaviorAttackUpdate();
 
-private:
+	/// <summary>
+	/// 通常行動初期化
+	/// </summary>
+	void BehaviorRootInitialize();
 
+	/// <summary>
+	/// 攻撃行動初期化
+	/// </summary>
+	void BehaviorAttackInitialize();
+
+private:
 	// ワールド変換データ
 	WorldTransform worldTransformBase_;
 	WorldTransform worldTransformBody_;
 	WorldTransform worldTransformHead_;
 	WorldTransform worldTransformL_arm_;
 	WorldTransform worldTransformR_arm_;
+	WorldTransform worldTransformWeapon_;
 
 	// カメラのビュープロジェクション
 	const ViewProjection* viewProjection_ = nullptr;
-
-	// パーツごとのモデル
-	Model* modelHead_ = nullptr;
-	Model* modelBody_ = nullptr;
-	Model* modelL_arm_ = nullptr;
-	Model* modelR_arm_ = nullptr;
-	Model* modelWeapon_ = nullptr;
-
 
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
@@ -100,21 +101,31 @@ private:
 	/// 浮遊移動のサイクル<frame>
 	int period = 60;
 
-	enum ModelPart { 
+	enum ModelPart {
 		BODY,
 		HEAD,
 		L_ARM,
-		R_ARM
+		R_ARM,
+		WEAPON,
 	};
 
 	enum class Behavior {
-		kRoot,		// 通常状態
-		kAttack,	// 攻撃中
+		kRoot,   // 通常状態
+		kAttack, // 攻撃中
 	};
+
+	enum class Attack {
+		kNone,
+		kUp,
+		kDown,
+		kStop,
+	};
+
 	// 状態
 	Behavior behavior_ = Behavior::kRoot;
 
+	Attack state_ = Attack::kNone;
+
 	// 次の動きのリクエスト
 	std::optional<Behavior> behaviorRequest_ = std::nullopt;
-
 };

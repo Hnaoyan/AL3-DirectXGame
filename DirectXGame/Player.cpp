@@ -18,44 +18,72 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	worldTransformHead_.Initialize();
 	worldTransformL_arm_.Initialize();
 	worldTransformR_arm_.Initialize();
-	
+	worldTransformWeapon_.Initialize();
+
 	// 親子関係　座標移動
 	worldTransformBody_.parent_ = &worldTransformBase_;
 	worldTransformHead_.parent_ = &worldTransformBody_;
 	worldTransformL_arm_.parent_ = &worldTransformBody_;
 	worldTransformR_arm_.parent_ = &worldTransformBody_;
 
+	worldTransformWeapon_.parent_ = &worldTransformBase_;
 
 	worldTransformHead_.translation_ = {0, 1.8f, 0};
 	worldTransformL_arm_.translation_ = {0.4f, 1.5f, -0.15f};
 	worldTransformR_arm_.translation_ = {-0.4f, 1.5f, -0.15f};
-
+	worldTransformWeapon_.translation_ = {0.0f, -0.4f, 0.0f};
 	// 浮遊ギミック初期化
 	InitializeFloatingGimmick();
 }
 
 void Player::Update() 
 {
+
+	//XINPUT_STATE joyState;
+
+	////if (!Input::GetInstance()->GetJoystickState())
+
+	//if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+	//	if (behavior_ != Behavior::kAttack) {
+	//		behaviorRequest_ = Behavior::kAttack;
+	//	}
+	//}
+	//	
+
 	if (behaviorRequest_) {
 		// 行動変更
 		behavior_ = behaviorRequest_.value();
 		// それぞれの初期化
 		switch (behavior_) {
 		case Player::Behavior::kRoot:
-
+			BehaviorRootInitialize();
 			break;
 		case Player::Behavior::kAttack:
-
+			BehaviorAttackInitialize();
 			break;
 		}
 		// リクエストをリセット
 		behaviorRequest_ = std::nullopt;
 	}
 
-	// 浮遊ギミック更新
-	UpdateFloatingGimmick();
+	switch (behavior_) {
+	case Player::Behavior::kRoot:
+		// 行動（基本）
+		BehaviorRootUpdate();
 
-	BehaviorRootUpdate();
+		break;
+	case Player::Behavior::kAttack:
+		// 行動（攻撃）
+		BehaviorAttackUpdate();
+
+		break;
+	}
+
+	ImGui::Begin("Hammer");
+	ImGui::DragFloat3("L_arm", &worldTransformL_arm_.rotation_.x, 0.01f, -10.0f, 10.0f);
+	ImGui::DragFloat3("R_arm", &worldTransformR_arm_.rotation_.x, 0.01f, -10.0f, 10.0f);
+	ImGui::DragFloat3("rotate", &worldTransformWeapon_.rotation_.x, 0.01f, -20.0f, 20.0f);
+	ImGui::End();
 
 	// ベースの行列計算
 	worldTransformBase_.UpdateMatrix();
@@ -65,6 +93,7 @@ void Player::Update()
 	worldTransformHead_.UpdateMatrix();
 	worldTransformL_arm_.UpdateMatrix();
 	worldTransformR_arm_.UpdateMatrix();
+	worldTransformWeapon_.UpdateMatrix();
 
 }
 
@@ -74,6 +103,9 @@ void Player::Draw(ViewProjection& viewProjection)
 	models_[HEAD]->Draw(worldTransformHead_, viewProjection);
 	models_[L_ARM]->Draw(worldTransformL_arm_, viewProjection);
 	models_[R_ARM]->Draw(worldTransformR_arm_, viewProjection);
+	//if (behavior_ == Behavior::kAttack) {
+		models_[WEAPON]->Draw(worldTransformWeapon_, viewProjection);
+	//}	
 }
 
 void Player::InitializeFloatingGimmick() 
@@ -94,8 +126,8 @@ void Player::UpdateFloatingGimmick()
 	// 浮遊を座標に反映
 	worldTransformBody_.translation_.y = std::sin(floatingParameter_) * floatingWidth;
 
-	worldTransformL_arm_.rotation_.z = std::sin(floatingParameter_) * floatingWidth;
-	worldTransformR_arm_.rotation_.z = std::sin(-floatingParameter_) * floatingWidth;
+	worldTransformL_arm_.rotation_.x = std::sin(floatingParameter_) * floatingWidth;
+	worldTransformR_arm_.rotation_.x = std::sin(floatingParameter_) * floatingWidth;
 
 	ImGui::Begin("Player");
 	ImGui::SliderFloat3("Head", &worldTransformHead_.translation_.x, -10.0f, 10.0f);
@@ -129,4 +161,23 @@ void Player::BehaviorRootUpdate()
 		float length = sqrtf(move.x * move.x + move.z * move.z);
 		worldTransformBase_.rotation_.x = std::atan2f(-move.y, length);
 	}
+
+	// 浮遊ギミック更新
+	UpdateFloatingGimmick();
+
+}
+
+void Player::BehaviorAttackUpdate() {
+	//worldTransformWeapon_.rotation_.x += 0.01f;
+	//worldTransformL_arm_.rotation_.x += 0.01f;
+	//worldTransformR_arm_.rotation_.x += 0.01f;
+}
+
+void Player::BehaviorRootInitialize() {
+	worldTransformL_arm_.rotation_ = {};
+	worldTransformR_arm_.rotation_ = {};
+}
+
+void Player::BehaviorAttackInitialize() { 
+	state_ = Attack::kNone;
 }
