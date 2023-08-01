@@ -32,7 +32,7 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	worldTransformHead_.translation_ = {0, 1.8f, 0};
 	worldTransformL_arm_.translation_ = {0.4f, 1.5f, -0.15f};
 	worldTransformR_arm_.translation_ = {-0.4f, 1.5f, -0.15f};
-	worldTransformWeapon_.translation_ = {0.0f, -0.4f, 0.0f};
+	worldTransformWeapon_.translation_ = {0.0f, -0.4f, -0.8f};
 	// 浮遊ギミック初期化
 	InitializeFloatingGimmick();
 
@@ -55,9 +55,13 @@ void Player::Update()
 	//		behaviorRequest_ = Behavior::kAttack;
 	//	}
 	//}
-	//	
+		
 	if (Input::GetInstance()->TriggerKey(DIK_0)) {
-		GlobalVariables::GetInstance()->SaveFile("Player");
+		//GlobalVariables::GetInstance()->SaveFile("Player");
+		if (behavior_ != Behavior::kAttack) {
+			behaviorRequest_ = Behavior::kAttack;
+		}
+
 	}
 	
 
@@ -90,12 +94,6 @@ void Player::Update()
 		break;
 	}
 
-	//ImGui::Begin("Hammer");
-	//ImGui::DragFloat3("L_arm", &worldTransformL_arm_.rotation_.x, 0.01f, -10.0f, 10.0f);
-	//ImGui::DragFloat3("R_arm", &worldTransformR_arm_.rotation_.x, 0.01f, -10.0f, 10.0f);
-	//ImGui::DragFloat3("rotate", &worldTransformWeapon_.rotation_.x, 0.01f, -20.0f, 20.0f);
-	//ImGui::End();
-
 	// ベースの行列計算
 	worldTransformBase_.UpdateMatrix();
 
@@ -114,9 +112,9 @@ void Player::Draw(ViewProjection& viewProjection)
 	models_[HEAD]->Draw(worldTransformHead_, viewProjection);
 	models_[L_ARM]->Draw(worldTransformL_arm_, viewProjection);
 	models_[R_ARM]->Draw(worldTransformR_arm_, viewProjection);
-	//if (behavior_ == Behavior::kAttack) {
-		//models_[WEAPON]->Draw(worldTransformWeapon_, viewProjection);
-	//}	
+	if (behavior_ == Behavior::kAttack) {
+		models_[WEAPON]->Draw(worldTransformWeapon_, viewProjection);
+	}	
 }
 
 void Player::InitializeFloatingGimmick() 
@@ -174,14 +172,30 @@ void Player::BehaviorRootUpdate()
 	}
 
 	// 浮遊ギミック更新
-	UpdateFloatingGimmick();
+	//UpdateFloatingGimmick();
 
 }
 
 void Player::BehaviorAttackUpdate() {
-	//worldTransformWeapon_.rotation_.x += 0.01f;
-	//worldTransformL_arm_.rotation_.x += 0.01f;
-	//worldTransformR_arm_.rotation_.x += 0.01f;
+	switch (state_) {
+	case Player::Attack::kDown:
+		worldTransformWeapon_.rotation_.x += 0.02f;
+		worldTransformL_arm_.rotation_.x += 0.02f;
+		worldTransformR_arm_.rotation_.x += 0.02f;
+		if (worldTransformWeapon_.rotation_.x > 1.5f) {
+			state_ = Attack::kStop;
+		}
+		break;
+	case Player::Attack::kStop:
+		attackStanTime_++;
+
+		if (attackStanTime_ == 60) {
+			state_ = Attack::kDown;
+			behaviorRequest_ = Behavior::kRoot;
+		}
+		break;
+	}
+
 }
 
 void Player::BehaviorRootInitialize() {
@@ -190,5 +204,9 @@ void Player::BehaviorRootInitialize() {
 }
 
 void Player::BehaviorAttackInitialize() { 
-	state_ = Attack::kNone;
+	worldTransformL_arm_.rotation_.x = 3.0f;
+	worldTransformR_arm_.rotation_.x = 3.0f;
+	worldTransformWeapon_.rotation_ = {};
+	state_ = Attack::kDown;
+	attackStanTime_ = 0;
 }

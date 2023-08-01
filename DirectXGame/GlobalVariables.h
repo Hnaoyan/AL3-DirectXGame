@@ -28,6 +28,19 @@ public:
 	void SaveFile(const std::string& groupName);
 
 	/// <summary>
+	/// ディレクトリの全ファイル読み込み
+	/// </summary>
+	void LoadFiles();
+
+	/// <summary>
+	/// ファイルから読み込む
+	/// </summary>
+	/// <param name="groupName"></param>
+	void LoadFile(const std::string& groupName);
+
+public:
+
+	/// <summary>
 	/// 値のセット(int)
 	/// </summary>
 	/// <param name="groupName"></param>
@@ -50,6 +63,36 @@ public:
 	/// <param name="key"></param>
 	/// <param name="value"></param>
 	void SetValue(const std::string& groupName, const std::string& key, const Vector3& value);
+
+	/// <summary>
+	/// 項目の追加(int)
+	/// </summary>
+	/// <param name="groupName"></param>
+	/// <param name="key"></param>
+	/// <param name="value"></param>
+	void AddItem(const std::string& groupName, const std::string& key, int32_t value);
+	
+	/// <summary>
+	/// 項目の追加(float)
+	/// </summary>
+	/// <param name="groupName"></param>
+	/// <param name="key"></param>
+	/// <param name="value"></param>
+	void AddItem(const std::string& groupName, const std::string& key, float value);
+	
+	/// <summary>
+	/// 項目の追加(Vector3)
+	/// </summary>
+	/// <param name="groupName"></param>
+	/// <param name="key"></param>
+	/// <param name="value"></param>
+	void AddItem(const std::string& groupName, const std::string& key, const Vector3& value);
+
+	// 値の取得
+	int32_t GetIntValue(const std::string& groupName, const std::string& key) const;
+	float GetFloatValue(const std::string& groupName, const std::string& key) const;
+	Vector3 GetVector3Value(const std::string& groupName, const std::string& key) const;
+
 
 
 private:

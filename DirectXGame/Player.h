@@ -115,8 +115,6 @@ private:
 	};
 
 	enum class Attack {
-		kNone,
-		kUp,
 		kDown,
 		kStop,
 	};
@@ -124,7 +122,9 @@ private:
 	// 状態
 	Behavior behavior_ = Behavior::kRoot;
 
-	Attack state_ = Attack::kNone;
+	Attack state_;
+
+	int attackStanTime_ = 0;
 
 	// 次の動きのリクエスト
 	std::optional<Behavior> behaviorRequest_ = std::nullopt;
