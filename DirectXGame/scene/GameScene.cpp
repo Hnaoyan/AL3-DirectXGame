@@ -88,8 +88,7 @@ void GameScene::Update() {
 	ground_->Update();
 
 	// カメラ
-	followCamera_->Update();
-
+	followCamera_->Update();	
 
 	#ifdef _DEBUG
 	if (input_->TriggerKey(DIK_L)) {

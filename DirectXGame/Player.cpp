@@ -6,6 +6,7 @@
 #include "Vector.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include "GlobalVariables.h"
 
 void Player::Initialize(const std::vector<Model*>& models) {
 	// モデル読み込み
@@ -34,6 +35,12 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	worldTransformWeapon_.translation_ = {0.0f, -0.4f, 0.0f};
 	// 浮遊ギミック初期化
 	InitializeFloatingGimmick();
+
+	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
+	const char* groupName = "Player";
+	// グループを追加
+	GlobalVariables::GetInstance()->CreateGroup(groupName);
+	globalVariables->SetValue(groupName, "Test", 90);
 }
 
 void Player::Update() 
@@ -49,6 +56,10 @@ void Player::Update()
 	//	}
 	//}
 	//	
+	if (Input::GetInstance()->TriggerKey(DIK_0)) {
+		GlobalVariables::GetInstance()->SaveFile("Player");
+	}
+	
 
 	if (behaviorRequest_) {
 		// 行動変更
@@ -79,11 +90,11 @@ void Player::Update()
 		break;
 	}
 
-	ImGui::Begin("Hammer");
-	ImGui::DragFloat3("L_arm", &worldTransformL_arm_.rotation_.x, 0.01f, -10.0f, 10.0f);
-	ImGui::DragFloat3("R_arm", &worldTransformR_arm_.rotation_.x, 0.01f, -10.0f, 10.0f);
-	ImGui::DragFloat3("rotate", &worldTransformWeapon_.rotation_.x, 0.01f, -20.0f, 20.0f);
-	ImGui::End();
+	//ImGui::Begin("Hammer");
+	//ImGui::DragFloat3("L_arm", &worldTransformL_arm_.rotation_.x, 0.01f, -10.0f, 10.0f);
+	//ImGui::DragFloat3("R_arm", &worldTransformR_arm_.rotation_.x, 0.01f, -10.0f, 10.0f);
+	//ImGui::DragFloat3("rotate", &worldTransformWeapon_.rotation_.x, 0.01f, -20.0f, 20.0f);
+	//ImGui::End();
 
 	// ベースの行列計算
 	worldTransformBase_.UpdateMatrix();
@@ -104,7 +115,7 @@ void Player::Draw(ViewProjection& viewProjection)
 	models_[L_ARM]->Draw(worldTransformL_arm_, viewProjection);
 	models_[R_ARM]->Draw(worldTransformR_arm_, viewProjection);
 	//if (behavior_ == Behavior::kAttack) {
-		models_[WEAPON]->Draw(worldTransformWeapon_, viewProjection);
+		//models_[WEAPON]->Draw(worldTransformWeapon_, viewProjection);
 	//}	
 }
 
@@ -129,14 +140,14 @@ void Player::UpdateFloatingGimmick()
 	worldTransformL_arm_.rotation_.x = std::sin(floatingParameter_) * floatingWidth;
 	worldTransformR_arm_.rotation_.x = std::sin(floatingParameter_) * floatingWidth;
 
-	ImGui::Begin("Player");
-	ImGui::SliderFloat3("Head", &worldTransformHead_.translation_.x, -10.0f, 10.0f);
-	ImGui::SliderFloat3("ArmL", &worldTransformL_arm_.translation_.x, -10.0f, 10.0f);
-	ImGui::SliderFloat3("ArmR", &worldTransformR_arm_.translation_.x, -10.0f, 10.0f);
-	ImGui::SliderInt("period", &period, 0, 120);
-	ImGui::SliderFloat("floatWid", &floatingWidth, 0.0f, 1.0f);
+	//ImGui::Begin("Player");
+	//ImGui::SliderFloat3("Head", &worldTransformHead_.translation_.x, -10.0f, 10.0f);
+	//ImGui::SliderFloat3("ArmL", &worldTransformL_arm_.translation_.x, -10.0f, 10.0f);
+	//ImGui::SliderFloat3("ArmR", &worldTransformR_arm_.translation_.x, -10.0f, 10.0f);
+	//ImGui::SliderInt("period", &period, 0, 120);
+	//ImGui::SliderFloat("floatWid", &floatingWidth, 0.0f, 1.0f);
 
-	ImGui::End();
+	//ImGui::End();
 
 }
 
