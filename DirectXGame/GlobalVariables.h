@@ -89,9 +89,9 @@ public:
 	void AddItem(const std::string& groupName, const std::string& key, const Vector3& value);
 
 	// 値の取得
-	int32_t GetIntValue(const std::string& groupName, const std::string& key) const;
-	float GetFloatValue(const std::string& groupName, const std::string& key) const;
-	Vector3 GetVector3Value(const std::string& groupName, const std::string& key) const;
+	int32_t GetIntValue(const std::string& groupName, const std::string& key);
+	float GetFloatValue(const std::string& groupName, const std::string& key);
+	Vector3 GetVector3Value(const std::string& groupName, const std::string& key);
 
 
 
@@ -102,15 +102,18 @@ private:
 	GlobalVariables& operator=(const GlobalVariables& variable);
 
 private:
-	// 項目
-	struct Item {
-		// 項目の値
-		std::variant<int32_t, float, Vector3> value;
-	};
-	// グループ
-	struct Group {
-		std::map<std::string, Item> items;
-	};
+	//// 項目
+	//struct Item {
+	//	// 項目の値
+	//	std::variant<int32_t, float, Vector3> value;
+	//};
+	//// グループ
+	//struct Group {
+	//	std::map<std::string, Item> items;
+	//};
+
+	using Item = std::variant<int32_t, float,Vector3>;
+	using Group = std::map<std::string,Item>;
 
 	// 全データ
 	std::map<std::string, Group> datas_;

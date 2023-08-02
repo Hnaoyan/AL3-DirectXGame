@@ -40,12 +40,17 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	const char* groupName = "Player";
 	// グループを追加
 	GlobalVariables::GetInstance()->CreateGroup(groupName);
-	globalVariables->SetValue(groupName, "Test", 90);
+	globalVariables->AddItem(groupName, "Test", 90);
+
+	globalVariables->AddItem(groupName, "Head Translation", worldTransformHead_.translation_);
+	globalVariables->AddItem(groupName, "ArmL Translation", worldTransformL_arm_.translation_);
+	globalVariables->AddItem(groupName, "ArmR Translation", worldTransformR_arm_.translation_);
+
 }
 
 void Player::Update() 
 {
-
+	ApplyGlobalVariables();
 	//XINPUT_STATE joyState;
 
 	////if (!Input::GetInstance()->GetJoystickState())
@@ -138,15 +143,6 @@ void Player::UpdateFloatingGimmick()
 	worldTransformL_arm_.rotation_.x = std::sin(floatingParameter_) * floatingWidth;
 	worldTransformR_arm_.rotation_.x = std::sin(floatingParameter_) * floatingWidth;
 
-	//ImGui::Begin("Player");
-	//ImGui::SliderFloat3("Head", &worldTransformHead_.translation_.x, -10.0f, 10.0f);
-	//ImGui::SliderFloat3("ArmL", &worldTransformL_arm_.translation_.x, -10.0f, 10.0f);
-	//ImGui::SliderFloat3("ArmR", &worldTransformR_arm_.translation_.x, -10.0f, 10.0f);
-	//ImGui::SliderInt("period", &period, 0, 120);
-	//ImGui::SliderFloat("floatWid", &floatingWidth, 0.0f, 1.0f);
-
-	//ImGui::End();
-
 }
 
 void Player::BehaviorRootUpdate() 
@@ -209,4 +205,17 @@ void Player::BehaviorAttackInitialize() {
 	worldTransformWeapon_.rotation_ = {};
 	state_ = Attack::kDown;
 	attackStanTime_ = 0;
+}
+
+void Player::ApplyGlobalVariables() 
+{
+	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
+	const char* groupName = "Player";
+	worldTransformHead_.translation_ =
+	    globalVariables->GetVector3Value(groupName, "Head Translation");
+	worldTransformL_arm_.translation_ =
+	    globalVariables->GetVector3Value(groupName, "ArmL Translation");
+	worldTransformR_arm_.translation_ =
+	    globalVariables->GetVector3Value(groupName, "ArmR Translation");
+
 }

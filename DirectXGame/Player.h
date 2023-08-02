@@ -76,6 +76,11 @@ public:
 	/// </summary>
 	void BehaviorAttackInitialize();
 
+	/// <summary>
+	/// 調整項目の適用
+	/// </summary>
+	void ApplyGlobalVariables();
+
 private:
 	// ワールド変換データ
 	WorldTransform worldTransformBase_;
