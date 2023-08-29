@@ -76,6 +76,10 @@ public:
 	/// </summary>
 	void BehaviorAttackInitialize();
 
+	void BehaviorDashInitialize();
+
+	void BehaviorDashUpdate();
+
 	/// <summary>
 	/// 調整項目の適用
 	/// </summary>
@@ -117,6 +121,7 @@ private:
 	enum class Behavior {
 		kRoot,   // 通常状態
 		kAttack, // 攻撃中
+		kDash,	// ダッシュ中
 	};
 
 	enum class Attack {
@@ -124,12 +129,23 @@ private:
 		kStop,
 	};
 
+	struct WorkDash {
+		// ダッシュ用の媒介変数
+		uint32_t dashParameter_ = 0;
+	};
+
 	// 状態
 	Behavior behavior_ = Behavior::kRoot;
 
 	Attack state_;
 
+	WorkDash workDash_;
+
 	int attackStanTime_ = 0;
+
+	float angle = 0;
+
+	float angleX = 0;
 
 	// 次の動きのリクエスト
 	std::optional<Behavior> behaviorRequest_ = std::nullopt;

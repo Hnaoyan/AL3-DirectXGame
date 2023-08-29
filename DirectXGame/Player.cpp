@@ -51,9 +51,13 @@ void Player::Initialize(const std::vector<Model*>& models) {
 void Player::Update() 
 {
 	ApplyGlobalVariables();
-	//XINPUT_STATE joyState;
+	XINPUT_STATE joyState;
 
-	////if (!Input::GetInstance()->GetJoystickState())
+	if(!Input::GetInstance()->GetJoystickState(0,joyState)) {
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) {
+			behaviorRequest_ = Behavior::kDash;
+		}
+	}
 
 	//if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
 	//	if (behavior_ != Behavior::kAttack) {
@@ -68,7 +72,6 @@ void Player::Update()
 		}
 
 	}
-	
 
 	if (behaviorRequest_) {
 		// 行動変更
@@ -80,6 +83,9 @@ void Player::Update()
 			break;
 		case Player::Behavior::kAttack:
 			BehaviorAttackInitialize();
+			break;
+		case Player::Behavior::kDash:
+			BehaviorDashInitialize();
 			break;
 		}
 		// リクエストをリセット
@@ -150,21 +156,37 @@ void Player::BehaviorRootUpdate()
 	XINPUT_STATE joyState;
 
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-		// 速さ
-		const float speed = 0.3f;
 
-		// 移動量
-		Vector3 move = {
-		    (float)joyState.Gamepad.sThumbLX / SHRT_MAX * speed, 0.0f,
-		    (float)joyState.Gamepad.sThumbLY / SHRT_MAX * speed};
+		const float threshold = 0.7f;
+		bool isMoving = false;
 
-		// 移動量に速さを反映
-		move = Scaler(MathCalc::Normalize(move), speed);
+		Vector3 moved = {
+		    (float)joyState.Gamepad.sThumbLX / SHRT_MAX, 0,
+		    (float)joyState.Gamepad.sThumbLY / SHRT_MAX};
 
-		worldTransformBase_.translation_ += move;
-		worldTransformBase_.rotation_.y = std::atan2f(move.x, move.z);
-		float length = sqrtf(move.x * move.x + move.z * move.z);
-		worldTransformBase_.rotation_.x = std::atan2f(-move.y, length);
+		if (MathCalc::Length(moved) > threshold) {
+			isMoving = true;
+		}
+
+		if (isMoving) {
+			//  速さ
+			const float speed = 0.3f;
+			// 移動量
+			Vector3 move = {
+			    (float)joyState.Gamepad.sThumbLX / SHRT_MAX * speed, 0.0f,
+			    (float)joyState.Gamepad.sThumbLY / SHRT_MAX * speed};
+			// 移動量に速さを反映
+			move = Scaler(MathCalc::Normalize(move), speed);
+
+			worldTransformBase_.translation_ += move;
+			//angle = std::atan2f(move.x, move.z);
+			worldTransformBase_.rotation_.y = std::atan2f(move.x, move.z);
+			float length = sqrtf(move.x * move.x + move.z * move.z);
+			worldTransformBase_.rotation_.x = std::atan2f(-move.y, length);
+		}
+
+		//worldTransformBase_.rotation_.y =
+		//    MathCalc::LerpShortAngle(worldTransformBase_.rotation_.y, angle, 0.1f);
 	}
 
 	// 浮遊ギミック更新
@@ -205,6 +227,24 @@ void Player::BehaviorAttackInitialize() {
 	worldTransformWeapon_.rotation_ = {};
 	state_ = Attack::kDown;
 	attackStanTime_ = 0;
+}
+
+void Player::BehaviorDashInitialize() 
+{
+	workDash_.dashParameter_ = 0;
+	//worldTransformBase_.rotation_.y;
+}
+
+void Player::BehaviorDashUpdate() 
+{
+
+	// ダッシュ時間
+	const uint32_t behaviorDashTime = 1;
+
+	if (++workDash_.dashParameter_ >= behaviorDashTime) {
+		behaviorRequest_ = Behavior::kRoot;
+	}
+
 }
 
 void Player::ApplyGlobalVariables() 

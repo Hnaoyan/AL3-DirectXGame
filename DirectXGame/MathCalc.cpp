@@ -1,5 +1,6 @@
-#include "MathCalc.h"
+﻿#include "MathCalc.h"
 #include <cmath>
+#include <algorithm>
 
 void MoveVector(Vector3& position, Vector3& vector) {
 	position.x += vector.x;
@@ -79,11 +80,23 @@ Vector3 MathCalc::Normalize(const Vector3& v) {
 
 Vector3 MathCalc::Lerp(const Vector3& v1, const Vector3& v2, float t) { 
 	Vector3 result;
+	float t_ = 0;
+	t_ += t;
+	t_ = std::clamp(t_, 0.0f, 1.0f);
 
 	result.x = (1.0f - t) * v1.x + t * v2.x;
 	result.y = (1.0f - t) * v1.y + t * v2.y;
 
 	return result;
+}
+
+float MathCalc::Lerp(const float a, const float b, float t) 
+{
+	float t_ = 0;
+	t_ += t;
+	t_ = std::clamp(t_, 0.0f, 1.0f);
+	float result = (1.0f - t) * a + t * b;
+	return result; 
 }
 
 Vector3 MathCalc::Slerp(const Vector3& v1, const Vector3& v2, float t) {
@@ -94,4 +107,14 @@ Vector3 MathCalc::Slerp(const Vector3& v1, const Vector3& v2, float t) {
 	Outer = Outer * t;
 
 	return result;
+}
+
+float MathCalc::LerpShortAngle(float a, float b, float t)
+{
+	// 角度差分
+	float diff = b - a;
+	diff = std::fmodf(diff, 2.0f);
+	diff = std::fmodf(diff, 1.0f);
+	diff = Lerp(a, diff, t);
+	return diff;
 }
