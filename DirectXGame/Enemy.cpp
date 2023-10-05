@@ -27,7 +27,10 @@ void Enemy::Initialize(Model* model,GameScene* gameScene, Vector3 position) {
 	SetGameScene(gameScene);
 
 	ApproachInitialize();
-
+	// 衝突属性を設定
+	SetCollisionAttribute(kCollisionAttributeEnemy);
+	// 衝突対象を自分の属性以外に設定
+	SetCollisionMask(kCollisionAttributePlayer);
 }
 
 void Enemy::Update() {
@@ -107,5 +110,10 @@ void Enemy::ApproachInitialize() {
 }
 
 void Enemy::OnCollision() { 
-	isDead_ = true;
+	isDead_ = true; }
+
+Vector3 Enemy::GetWorldPosition() {
+	Vector3 worldPos = Matrix::GetWorldPosition(worldTransform_.matWorld_);
+
+	return worldPos;
 }

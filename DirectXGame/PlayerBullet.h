@@ -1,9 +1,11 @@
 #pragma once
 #include "Model.h"
 #include "WorldTransform.h"
+#include "Collider.h"
 
 // PlayerCharacterBullet
-class PlayerBullet {
+class PlayerBullet : public Collider
+{
 public:
 	/// Initialize
 	/// <param name="model">model</param>
@@ -20,9 +22,9 @@ public:
 
 	bool IsDead() const { return isDead_; }
 	// Collision
-	void OnCollision();
+	void OnCollision() override;
 
-	Vector3 GetWorldPosition();
+	Vector3 GetWorldPosition() override;
 
 	const float radius = 10.0f;
 

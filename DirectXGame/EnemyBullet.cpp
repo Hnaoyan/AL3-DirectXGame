@@ -1,4 +1,4 @@
-#include "EnemyBullet.h"
+﻿#include "EnemyBullet.h"
 #include"MathCalc.h"
 #include<cassert>
 #include<cmath>
@@ -20,6 +20,10 @@ void EnemyBullet::Initialize(Model* model, const Vector3& position,const Vector3
 	worldTransform_.rotation_.y = std::atan2(velocity_.x, velocity_.z);
 	float length = sqrt(velocity_.x * velocity_.x + velocity_.z * velocity_.z);
 	worldTransform_.rotation_.x = std::atan2(-velocity_.y, length);
+	// 衝突属性を設定
+	SetCollisionAttribute(kCollisionAttributeEnemy);
+	// 衝突対象を自分の属性以外に設定
+	SetCollisionMask(kCollisionAttributePlayer);
 }
 
 void EnemyBullet::Update() {
@@ -43,7 +47,7 @@ void EnemyBullet::OnCollision() {
 }
 
 Vector3 EnemyBullet::GetWorldPosition() {
-	Vector3 worldPos;
+	Vector3 worldPos = {};
 
 	worldPos.x = worldTransform_.matWorld_.m[3][0];
 	worldPos.y = worldTransform_.matWorld_.m[3][1];

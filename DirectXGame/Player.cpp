@@ -5,7 +5,6 @@
 #include <Windows.h>
 #include "Vector.h"
 
-
 Player::~Player() { 
 	for (PlayerBullet* bullet : bullets_) {
 		delete bullet;
@@ -35,6 +34,11 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 
 	// スプライト生成
 	sprite2DReticle_ = Sprite::Create(textureReticle,Vector2(WinApp::kWindowWidth / 2,WinApp::kWindowHeight / 2),Vector4(1,1,1,1),Vector2(0.5f,0.5f));
+	
+	// 衝突属性を設定
+	SetCollisionAttribute(kCollisionAttributePlayer);
+	// 衝突対象を自分の属性以外に設定
+	SetCollisionMask(kCollisionAttributeEnemy);
 }
 
 void Player::Rotate() {
@@ -191,7 +195,7 @@ void Player::Update(ViewProjection& viewProjection) {
 
 void Player::Draw(ViewProjection& viewProjection) {
 	// 3DModel
-	model_->Draw(worldTransform_, viewProjection, this->textureHandle_);
+	model_->Draw(worldTransform_, viewProjection/*, this->textureHandle_*/);
 	// レティクルオフセット
 	offsetModel_->Draw(worldTransform3DReticle_, viewProjection, offsetTexture_);
 

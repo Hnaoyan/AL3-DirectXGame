@@ -13,6 +13,7 @@
 #include "Skydome.h"
 #include "DebugCamera.h"
 #include "RailCamera.h"
+#include "CollisionManager.h"
 
 /// <summary>
 /// ゲームシーン
@@ -83,12 +84,18 @@ private: // メンバ変数
 	Enemy* enemy_ = nullptr;
 	std::list<Enemy*> enemys_;
 
+	CollisionManager* colliderList_ = nullptr;
+
 	// 敵弾
 	std::list<EnemyBullet*> enemyBullets_;
 
 	int32_t count = 0;
 
 	int32_t deathTimer = 0;
+	/// <summary>
+	/// コライダー2つの衝突判定と応答
+	/// </summary>
+	void CheckCollisionPair(Collider* colliderA, Collider* colliderB);
 
 	/// <summary>
 	/// ゲームシーン用

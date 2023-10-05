@@ -6,6 +6,7 @@
 #include <list>
 #include"EnemyBullet.h"
 #include"TimedCall.h"
+#include "Collider.h"
 
 class Player;
 
@@ -16,7 +17,7 @@ enum class Phase {
 	Leave,		// Leave
 };
 
-class Enemy {
+class Enemy : public Collider{
 public:
 	// Initialize
 	void Initialize(Model* model, GameScene* gameScene, Vector3 position);
@@ -30,7 +31,9 @@ public:
 	void Leave();
 
 	// Collision
-	void OnCollision();
+	void OnCollision() override;
+
+	Vector3 GetWorldPosition() override;
 
 	// Bullet
 	void Fire();
